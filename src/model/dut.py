@@ -43,13 +43,9 @@ class DUT:
             return self.swfi_inputs[component]
         return self.hw_inputs.get(component, 0.0)
 
-    def update_physics(self, value: float):
+    def update_firmware(self):
 
-        self.hw_inputs['temperature'] = value
-
-        if self.hw_inputs['temperature'] > 20.0:
+        if self.hw_inputs['temperature'] > 25.0:
             self.outputs['temperature_led'] = True
-            return 'green'
         else:
             self.outputs['temperature_led'] = False
-            return 'red'
