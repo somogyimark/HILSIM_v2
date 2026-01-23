@@ -9,6 +9,7 @@ def main():
 
     @ui.page('/')
     def index():
+        ui.colors(led='red')
         ui.label('HIL Simulator Prototype').classes('text-2xl font-bold')
 
         with ui.card():
@@ -19,10 +20,12 @@ def main():
             ui.slider(min=0, max=100, value=25.0,
                       on_change=lambda e: update_system(e.value))
 
+            ui.icon('sym_r_thermostat', size='xl', color='led')
             def update_system(value):
                 dut.set_hw_input('temp_sensor', value)
                 effective_val = dut.get_input('temp_sensor')
                 result_label.set_text(f'Effective Value: {effective_val:.1f} °C')
+                ui.colors(led=f'{dut.update_physics(value)}')
 
             update_system(25.0)
 
