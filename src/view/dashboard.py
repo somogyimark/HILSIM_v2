@@ -1,20 +1,81 @@
-from nicegui import ui, binding
+from nicegui import ui
 
 
 class DashboardPanel:
-    def __init__(self, on_temp_change_callback):
-        self.on_temp_change = on_temp_change_callback
+    def __init__(self, callbacks):
+        """
+        callbacks: {'temp': func, 'pot': func, 'switch': func, 'toggle_bug': func}
+        """
+        self.callbacks = callbacks
+        self.pot_leds = []
 
-        with ui.card():
-            ui.label('Temperature Sensor')
+        with ui.card().classes('w-full'):
+            # Címsor és Bug Gomb egy sorban
+            with ui.row().classes('w-full justify-between items-center mb-4'):
+                ui.label('HIL Dashboard').classes('text-xl font-bold')
+                # A globális hiba gomb
+                self.btn_bug = ui.button('BUG SIMULATION', color='red',
+                                         on_click=lambda: self.callbacks['toggle_bug']())
 
-            self.result_label = ui.label('Effective Value: ---')
+            # ---------------------------------------------------------
+            # 1. Temperature Section
+            # ---------------------------------------------------------
+            ui.label('Temperature Sensor').classes('font-bold text-gray-400')
 
-            ui.slider(min=0, max=100, value=25.0,
-                      on_change=lambda e: self.on_temp_change(e.value))
+            with ui.row().classes('w-full items-center justify-start gap-8'):
 
-            self.temp_icon = ui.icon('sym_r_thermostat', size='xl')
+                ui.knob(value=25, min=0, max=100, step=1, show_value=True,
+                        color='red', track_color='grey-800', size='70px',
+                        on_change=lambda e: self.callbacks['temp'](e.value))
 
-    def update_feedback(self, temp_value: float, color: str):
-        self.result_label.set_text(f'Effective Value: {temp_value:.1f} °C')
-        self.temp_icon.props(f'color={color}')
+                with ui.column().classes('items-center'):
+                    self.temp_icon = ui.icon('thermostat', size='lg', color='grey')
+                    self.lbl_temp_val = ui.label('Eff: 25 °C').classes('font-mono text-lg')
+
+            ui.separator().classes('my-4')
+
+            # ---------------------------------------------------------
+            # 2. Potentiometer Section
+            # ---------------------------------------------------------
+            ui.label('Potentiometer (RPM)').classes('font-bold text-gray-400')
+
+            with ui.row().classes('w-full items-center justify-start gap-8'):
+
+                ui.knob(value=0, min=0, max=100, step=1, show_value=True,
+                        color='blue-500', track_color='blue-900', size='80px',
+                        on_change=lambda e: self.callbacks['pot'](e.value))
+
+
+                with ui.row().classes('gap-3 bg-gray-900 p-3 rounded-lg border border-gray-700'):
+                    for _ in range(4):
+
+                        self.pot_leds.append(ui.icon('circle', size='md', color='grey'))
+
+            ui.separator().classes('my-4')
+
+            # ---------------------------------------------------------
+            # 3. Switch Section
+            # ---------------------------------------------------------
+            with ui.row().classes('w-full items-center mt-2 justify-between'):
+                ui.label('Master Switch').classes('font-bold')
+                with ui.row().classes('items-center'):
+                    ui.switch(on_change=lambda e: self.callbacks['switch'](e.value))
+                    self.switch_led = ui.icon('power_settings_new', size='md', color='grey').classes('ml-4')
+
+    def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
+        # Temp update
+        self.lbl_temp_val.set_text(f"Effective: {model_data['temp']} °C")
+        self.temp_icon.props(f'color={feedback_colors["temp"]}')
+
+        # Pot LEDs update
+        for i, led_icon in enumerate(self.pot_leds):
+            led_icon.props(f'color={feedback_colors["pot_leds"][i]}')
+
+        # Switch LED update
+        self.switch_led.props(f'color={feedback_colors["switch"]}')
+
+
+        if bug_active:
+            self.btn_bug.props('outline')
+        else:
+            self.btn_bug.props(remove='outline')
