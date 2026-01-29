@@ -15,6 +15,13 @@ def main():
 
     BASE_DIR = Path(__file__).resolve().parent.parent
     app.add_static_files('/assets', BASE_DIR / 'assets')
+    import base64
+
+    def image_to_base64(path: str) -> str:
+        with open(path, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
+
+    LOGO_BASE64 = image_to_base64(r"D:\Szakdolgozat\HILSIM_v2\assets\logo.png")
 
     @ui.page('/')
     def index():

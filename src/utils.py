@@ -1,29 +1,143 @@
 import os
+from nicegui import  app
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+app.add_static_files('/assets', BASE_DIR / 'assets')
 
 HTML_STYLE = """
 <style>
-    body{ background-color: #002b3e; color: #edf2f4; font-family: Arial, sans-serif; width: 1350px; margin: auto; }
-    .div-base{ margin: 10px; background-color: #005f8bb4; border-radius: 20px; padding: 20px; backdrop-filter: blur(8px); }
-    .header{ margin-bottom: 40px; border-bottom: 1px solid #edf2f4; padding-bottom: 20px; }
-    .task-log > h2{ margin-top: 10px; margin-bottom: 5px; }
-    .task-log > span{ font-style: italic; font-size: 18px; display: inline-block; margin-bottom: 10px; }
-    .comment{ padding: 20px; font-size: 18px; font-style: italic; color: #ffd166; }
+    body {
+        background-color: #002b3e;
+        /* background: radial-gradient(#00608b, #002b3e); */
+        color: #edf2f4;
+        
+        background-image: url("data:image/png;base64,{LOGO_BASE64}");
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 40%;
+        background-attachment: fixed;
 
-    /* Assert Table Styles */
-    .assert-container { display: flex; align-items: flex-start; margin-top: 10px; }
-    .assert-header { 
-        background-color: #003c57b2; padding: 15px; border-radius: 20px; 
-        width: 120px; margin-right: 20px; text-align: center;
+        width: 1350px;
+        margin: auto;
     }
-    .assert-results { display: flex; flex-direction: column; }
-    .assert-row { display: flex; margin-bottom: 2px; }
-    .assert-cell {
-        background-color: #003c57b2; padding: 10px; border-radius: 10px; 
-        margin: 1px; width: 200px; text-align: center;
+    .div-base{
+    margin: 10px;
+    background-color: #005f8bb4;
+    border-radius: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    backdrop-filter: blur(8px);
+    position: relative;
     }
-    .assert-cell.header { background-color: #002b3fd7; font-weight: bold; }
-    .pass { background-color: #38b000; font-weight: bold; }
-    .fail { background-color: #ba181b; font-weight: bold; }
+    .header{
+    margin-bottom: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding-bottom: 20px;
+    }
+    
+    .header > h1{
+        margin-bottom: 10px;
+    }
+    
+    .header > h3{
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    
+    .task-log > h2{
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .task-log > span{
+        font-style: italic;
+        font-size: 18px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    
+    .comment{
+        padding: 20px;
+        font-size: 18px;
+        font-style: italic;
+    }
+    
+    .assert-header{
+        display: inline-block;
+        background-color: #003c57b2;
+        padding-left: 15px;
+        padding-right: 20px;
+        border-radius: 20px;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        margin-top: 5px;
+        margin-left: 5px;
+        margin-bottom: 5px;
+        height: calc(100% - 10px);
+        width: 120px;
+    }
+    
+    .assert-header > h2{
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .assert-header > span{
+        font-style: italic;
+        font-size: 18px;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    
+    .assert-results{
+        display: inline-block;
+        margin-left: 160px;
+    }
+    
+    .assert-row-header{
+        display: inline-block;
+    }
+    
+    .assert-row-header > div{
+        display: inline-block;
+        background-color: #002b3fd7;
+        padding: 10px;
+        border-radius: 10px;
+        margin-left: 1px;
+        margin-right: 1px;
+        width: 200px;
+        text-align: center;
+    }
+    
+    .assert-row-data > div{
+        display: inline-block;
+        background-color: #003c57b2;
+        padding: 10px;
+        border-radius: 10px;
+        margin-left: 1px;
+        margin-right: 1px;
+        margin-top: 2px;
+        width: 200px;
+        text-align: center;
+    }
+    
+    .assert-row-data > .pass{
+        background-color: #38b000;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+    
+    .assert-row-data > .fail{
+        background-color: #ba181b;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
 </style>
 """
 

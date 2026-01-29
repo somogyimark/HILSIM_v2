@@ -14,28 +14,32 @@ class HtmlLogger:
 
         with open(self.filepath, 'w', encoding='utf-8') as f:
             f.write(f"<html><head>{HTML_STYLE}</head><body>")
-            f.write(f"<div class='div-base header'><h1>Test Log: {script_name}</h1>")
-            f.write(f"<h3>Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h3></div>")
-            f.write("<div class='div-base task-log'>")
+            f.write(f"<div class='div-base header'><h1>LOG CREATED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h1>")
+            f.write(f"<h3>HOST: ???</h3>")
+            f.write(f"<h3>FROM: ???</h3></div>")
 
     def log_comment(self, text: str):
-        self._write(f"<div class='comment'>Example Comment: {text}</div>")
+        self._write("<div class='div-base task-log'>")
+        self._write(f"<div class='comment'>{text}</div>")
+        self._write("</div>")
 
     def log_generic(self, title: str, message: str):
-        self._write(f"<h2>{title}</h2><span>{message}</span><hr>")
+        self._write("<div class='div-base task-log'>")
+        self._write(f"<h2>{title}</h2><span>{message}</span>")
+        self._write("</div>")
 
     def log_assert(self, item: dict):
         """
         Egyetlen assert eredményének logolása külön blokkba.
         item: {'param': 'temp', 'expected': 30, 'actual': 25, 'passed': False}
         """
+        self._write("<div class='div-base task-log'>")
         res_class = "pass" if item['passed'] else "fail"
         res_text = "PASS" if item['passed'] else "FAIL"
 
         # Minden Assert külön 'div-base'-be kerül, hogy a CSS absolute pozicionálása
         # (left: 0, top: 0) ezen a dobozon belül legyen érvényes!
         html = f"""
-        <div class='div-base' style='min-height: 100px;'>
             <div class='assert-header'>
                 <h2>ASSERT</h2>
                 <span>Check</span>
@@ -56,13 +60,13 @@ class HtmlLogger:
                     <div class='{res_class}'>{res_text}</div>
                 </div>
             </div>
-        </div>
         """
         self._write(html)
+        self._write("</div>")
 
     def close_log(self):
         if self.filepath:
-            self._write("</div></body></html>")
+            self._write("</body></html>")
             self.filepath = None
 
     def _write(self, content: str):

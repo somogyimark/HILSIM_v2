@@ -29,7 +29,6 @@ class ScriptExecutor:
                 if not parts: continue
 
                 if line.lower() == 'pause':
-                    self.hil.logger.log_generic("PAUSE", "Execution paused (End of script).")
                     log_callback(">>> Script execution finished (PAUSE reached).")
                     break
 

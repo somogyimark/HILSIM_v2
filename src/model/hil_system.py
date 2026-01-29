@@ -55,7 +55,6 @@ class HILSystem:
             return {'status': 'ok'}
 
         elif cmd_type == '-start':
-            self.logger.log_generic("System Start", "Simulation sequence started.")
             return {'status': 'ok'}
 
         elif cmd_type == '-comment':
