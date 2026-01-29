@@ -24,42 +24,40 @@ class HtmlLogger:
     def log_generic(self, title: str, message: str):
         self._write(f"<h2>{title}</h2><span>{message}</span><hr>")
 
-    def log_assert_group(self, asserts: list):
-
-        html = "<div class='assert-container'>"
-
-        html += """
-        <div class='assert-header'>
-            <h2>ASSERT</h2>
-            <span>Check</span>
-        </div>
+    def log_assert(self, item: dict):
         """
-
-        html += "<div class='assert-results'>"
-
-        html += """
-        <div class='assert-row'>
-            <div class='assert-cell header'>Parameter</div>
-            <div class='assert-cell header'>Expected</div>
-            <div class='assert-cell header'>Actual</div>
-            <div class='assert-cell header'>Result</div>
-        </div>
+        Egyetlen assert eredményének logolása külön blokkba.
+        item: {'param': 'temp', 'expected': 30, 'actual': 25, 'passed': False}
         """
+        res_class = "pass" if item['passed'] else "fail"
+        res_text = "PASS" if item['passed'] else "FAIL"
 
-        for item in asserts:
-            res_class = "pass" if item['passed'] else "fail"
-            res_text = "PASS" if item['passed'] else "FAIL"
-
-            html += f"""
-            <div class='assert-row'>
-                <div class='assert-cell'>{item['param']}</div>
-                <div class='assert-cell'>{item['expected']}</div>
-                <div class='assert-cell'>{item['actual']}</div>
-                <div class='assert-cell {res_class}'>{res_text}</div>
+        # Minden Assert külön 'div-base'-be kerül, hogy a CSS absolute pozicionálása
+        # (left: 0, top: 0) ezen a dobozon belül legyen érvényes!
+        html = f"""
+        <div class='div-base' style='min-height: 100px;'>
+            <div class='assert-header'>
+                <h2>ASSERT</h2>
+                <span>Check</span>
             </div>
-            """
 
-        html += "</div></div>"
+            <div class='assert-results'>
+                <div class='assert-row-header'>
+                    <div>Parameter</div>
+                    <div>Expected</div>
+                    <div>Actual</div>
+                    <div>Result</div>
+                </div>
+
+                <div class='assert-row-data'>
+                    <div>{item['param']}</div>
+                    <div>{item['expected']}</div>
+                    <div>{item['actual']}</div>
+                    <div class='{res_class}'>{res_text}</div>
+                </div>
+            </div>
+        </div>
+        """
         self._write(html)
 
     def close_log(self):

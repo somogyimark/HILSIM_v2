@@ -77,9 +77,5 @@ class MainController:
             colors['pot_leds'].append('green' if is_on else 'grey')
 
 
-        model_data = {
-            'temp': self.model.get_input('temperature')
-        }
-
         if self.view_dashboard:
-            self.view_dashboard.update_view(model_data, colors, self.model.is_bug_active)
+            self.view_dashboard.update_view(colors, self.model.is_bug_active)

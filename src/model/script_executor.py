@@ -38,18 +38,11 @@ class ScriptExecutor:
                     args = parts[2:]
 
                     if cmd_type == '-assert':
-                        res = self.hil.process_command(cmd_type, args)
-                        assert_buffer.append(res)
+                        result = self.hil.process_command(cmd_type, args)
+                        self.hil.logger.log_assert(result)
 
-                        next_line_is_assert = False
-                        if i + 1 < len(lines):
-                            next_parts = lines[i + 1].split()
-                            if len(next_parts) > 1 and next_parts[1] == '-assert':
-                                next_line_is_assert = True
-
-                        if not next_line_is_assert:
-                            self.hil.logger.log_assert_group(assert_buffer)
-                            assert_buffer = []
+                        if not result['passed']:
+                            log_callback(f"ASSERT FAIL: {args}")
 
                     elif cmd_type == '-wait':
                         seconds = float(args[0])
