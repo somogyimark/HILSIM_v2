@@ -1,14 +1,18 @@
 from src.model.dut import DUT
+from src.model.script_executor import ScriptExecutor
 
 
 class MainController:
     def __init__(self, model: DUT):
         self.model = model
-        self.view = None
+        self.executor = ScriptExecutor(model)
 
-    def register_view(self, view):
-        self.view = view
+        self.view_dashboard = None
+        self.view_editor = None
 
+    def register_views(self, dashboard, editor):
+        self.view_dashboard = dashboard
+        self.view_editor = editor
         self.refresh_system()
 
     # --- Event Handlers (User Inputs) ---
@@ -28,11 +32,15 @@ class MainController:
         self.refresh_system()
 
     def on_bug_toggle(self):
-        """A Dashboard 'BUG SIMULATION' gombja."""
 
         self.model.is_bug_active = not self.model.is_bug_active
         self.refresh_system()
-    # --- Core Logic Update ---
+
+    def on_run_script(self, code: str):
+        if self.view_editor:
+            self.executor.execute(code, log_callback=self.view_editor.append_log)
+
+        self.refresh_system()
 
     def refresh_system(self):
         self.model.update_firmware()
@@ -53,6 +61,5 @@ class MainController:
             'temp': self.model.get_input('temperature')
         }
 
-        if self.view:
-
-            self.view.update_view(model_data, colors, self.model.is_bug_active)
+        if self.view_dashboard:
+            self.view_dashboard.update_view(model_data, colors, self.model.is_bug_active)
