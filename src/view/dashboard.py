@@ -30,7 +30,6 @@ class DashboardPanel:
 
                 with ui.column().classes('items-center'):
                     self.temp_icon = ui.icon('thermostat', size='lg', color='grey')
-                    self.lbl_temp_val = ui.label('Eff: 25 °C').classes('font-mono text-lg')
 
             ui.separator().classes('my-4')
 
@@ -64,7 +63,6 @@ class DashboardPanel:
 
     def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
         # Temp update
-        self.lbl_temp_val.set_text(f"Effective: {model_data['temp']} °C")
         self.temp_icon.props(f'color={feedback_colors["temp"]}')
 
         # Pot LEDs update
