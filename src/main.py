@@ -3,11 +3,15 @@ from model.dut import DUT
 from pathlib import Path
 from view.layout import build_interface
 from controller.main_controller import MainController
+from model.hil_system import HILSystem
+from utils import ensure_directories
 
 
 def main():
+    ensure_directories()
     dut = DUT()
-    controller = MainController(dut)
+    hil_system = HILSystem(dut)
+    controller = MainController(hil_system)
 
     BASE_DIR = Path(__file__).resolve().parent.parent
     app.add_static_files('/assets', BASE_DIR / 'assets')

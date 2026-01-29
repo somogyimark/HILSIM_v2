@@ -1,27 +1,87 @@
-import traceback
-from src.model.dut import DUT
+import asyncio
+from src.model.hil_system import HILSystem
+
 
 class ScriptExecutor:
-    def __init__(self, dut: DUT):
-        self.dut = dut
+    def __init__(self, hil_system: HILSystem):
+        self.hil = hil_system
+        self.is_running = False
 
-    def execute(self, script_code: str, log_callback):
+    async def run_script(self, script_text: str, log_callback):
+        self.is_running = True
+        lines = [line.strip() for line in script_text.split('\n') if line.strip()]
 
-        def custom_print(*args):
-            msg = " ".join(map(str, args))
-            log_callback(msg)
+        if not self._validate_structure(lines, log_callback):
+            self.is_running = False
+            return
 
+        self.hil.logger.start_log("Batch Execution")
 
-        execution_context = {
-            'dut': self.dut,
-            'print': custom_print,
-        }
+        assert_buffer = []
 
         try:
-            log_callback(">>> Running script...")
+            for i, line in enumerate(lines):
+                if not self.is_running: break
 
-            exec(script_code, execution_context)
-            log_callback(">>> Execution finished successfully.")
+                log_callback(f"Line {i + 1}: {line}")
+
+                parts = line.split()
+                if not parts: continue
+
+                if line.lower() == 'pause':
+                    self.hil.logger.log_generic("PAUSE", "Execution paused (End of script).")
+                    log_callback(">>> Script execution finished (PAUSE reached).")
+                    break
+
+                if parts[0] == 'batchControl':
+                    cmd_type = parts[1]
+                    args = parts[2:]
+
+                    if cmd_type == '-assert':
+                        res = self.hil.process_command(cmd_type, args)
+                        assert_buffer.append(res)
+
+                        next_line_is_assert = False
+                        if i + 1 < len(lines):
+                            next_parts = lines[i + 1].split()
+                            if len(next_parts) > 1 and next_parts[1] == '-assert':
+                                next_line_is_assert = True
+
+                        if not next_line_is_assert:
+                            self.hil.logger.log_assert_group(assert_buffer)
+                            assert_buffer = []
+
+                    elif cmd_type == '-wait':
+                        seconds = float(args[0])
+                        log_callback(f"... Waiting {seconds}s ...")
+                        await asyncio.sleep(seconds)
+
+                    else:
+                        self.hil.process_command(cmd_type, args)
+
         except Exception as e:
-            error_msg = traceback.format_exc()
-            log_callback(f"ERROR:\n{error_msg}")
+            log_callback(f"CRITICAL ERROR: {str(e)}")
+        finally:
+            self.hil.logger.close_log()
+            self.is_running = False
+
+    def _validate_structure(self, lines, log_cb):
+        # 1. -init
+        has_init = any('batchControl -init' in line for line in lines)
+        if not has_init:
+            log_cb("ERROR: Script must contain 'batchControl -init'")
+            return False
+
+        # 2. -start
+        has_start = any('batchControl -start' in line for line in lines)
+        if not has_start:
+            log_cb("ERROR: Script must contain 'batchControl -start'")
+            return False
+
+        # 3. pause
+        has_pause = any(line.lower() == 'pause' for line in lines)
+        if not has_pause:
+            log_cb("ERROR: Script must contain 'pause'")
+            return False
+
+        return True

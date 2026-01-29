@@ -10,10 +10,8 @@ class DashboardPanel:
         self.pot_leds = []
 
         with ui.card().classes('w-full'):
-            # Címsor és Bug Gomb egy sorban
             with ui.row().classes('w-full justify-between items-center mb-4'):
                 ui.label('HIL Dashboard').classes('text-xl font-bold')
-                # A globális hiba gomb
                 self.btn_bug = ui.button('BUG SIMULATION', color='red',
                                          on_click=lambda: self.callbacks['toggle_bug']())
 
@@ -61,7 +59,7 @@ class DashboardPanel:
                     ui.switch(on_change=lambda e: self.callbacks['switch'](e.value))
                     self.switch_led = ui.icon('power_settings_new', size='md', color='grey').classes('ml-4')
 
-    def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
+    def update_view(self, feedback_colors: dict, bug_active: bool):
         # Temp update
         self.temp_icon.props(f'color={feedback_colors["temp"]}')
 
