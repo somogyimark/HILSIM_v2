@@ -23,11 +23,11 @@ class MainController:
     # --- Event Handlers (User Inputs) ---
 
     def on_temp_change(self, value):
-        self.model.set_hw_input('temperature', value)
+        self.model.set_hw_input('temp', value)
         self.refresh_system()
 
     def on_pot_change(self, value):
-        self.model.set_hw_input('potmeter', value)
+        self.model.set_hw_input('pot', value)
         self.refresh_system()
 
     def on_switch_change(self, value):

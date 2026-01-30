@@ -4,13 +4,13 @@ from typing import Dict, Any, Optional
 class DUT:
     def __init__(self):
         self.hw_inputs: Dict[str, int] = {
-            'potmeter': 0,
-            'temperature': 25,
+            'pot': 0,
+            'temp': 25,
             'switch': 0
         }
         self.swfi_inputs: Dict[str, Optional[int]] = {
-            'potmeter': None,
-            'temperature': None,
+            'pot': None,
+            'temp': None,
             'switch': None
         }
         self.outputs: Dict[str, int] = {
@@ -45,13 +45,13 @@ class DUT:
 
     def update_firmware(self):
         """ temperature logic """
-        if self.get_input('temperature') > 30:
+        if self.get_input('temp') > 30:
             self.outputs['temp_led'] = 1
         else:
             self.outputs['temp_led'] = 0
 
         """ Potmeter logic """
-        pot_val = self.get_input('potmeter')
+        pot_val = self.get_input('pot')
         if pot_val < 64:
             self.outputs['pot_led'] = 1000
         elif pot_val < 128:
@@ -62,8 +62,7 @@ class DUT:
             self.outputs['pot_led'] = 1111
 
         """ Switch Logic """
-        switch_val = self.get_input('switch')
-        self.outputs['switch_led'] = switch_val
+        self.outputs['switch_led'] = self.get_input('switch')
         # if self.is_bug_active:
         #
         #     self.outputs['switch_led'] = not bool(switch_val)

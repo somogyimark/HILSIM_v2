@@ -32,15 +32,11 @@ class HtmlLogger:
         self._write("</div>")
 
     def log_assert(self, item: dict):
-        """
-        Egyetlen assert eredményének logolása külön blokkba.
-        item: {'param': 'temp', 'expected': 30, 'actual': 25, 'passed': False}
-        """
+
         self._write("<div class='div-base task-log'>")
         res_class = "pass" if item['result'] == "PASS" else "fail"
 
-        # Minden Assert külön 'div-base'-be kerül, hogy a CSS absolute pozicionálása
-        # (left: 0, top: 0) ezen a dobozon belül legyen érvényes!
+
         html = f"""
             <div class='assert-header'>
                 <h2>Assert</h2>
