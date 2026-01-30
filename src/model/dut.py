@@ -13,13 +13,10 @@ class DUT:
             'temperature': None,
             'switch': None
         }
-        self.outputs: Dict[str, bool] = {
-            'potmeter_led_1': True,
-            'potmeter_led_2': False,
-            'potmeter_led_3': False,
-            'potmeter_led_4': False,
-            'temperature_led': False,
-            'switch_led': False,
+        self.outputs: Dict[str, int] = {
+            'potmeter_led': 1000,
+            'temperature_led': 0,
+            'switch_led': 0,
         }
 
         self.is_bug_active: bool = False
@@ -45,23 +42,27 @@ class DUT:
 
     def update_firmware(self):
         """ temperature logic """
-        if self.hw_inputs['temperature'] > 25:
-            self.outputs['temperature_led'] = True
+        if self.hw_inputs['temperature'] > 30:
+            self.outputs['temperature_led'] = 1
         else:
-            self.outputs['temperature_led'] = False
+            self.outputs['temperature_led'] = 0
 
         """ Potmeter logic """
         pot_val = self.get_input('potmeter')
-        self.outputs['potmeter_led_1'] = True
-        self.outputs['potmeter_led_2'] = pot_val > 25
-        self.outputs['potmeter_led_3'] = pot_val > 50
-        self.outputs['potmeter_led_4'] = pot_val > 75
+        if pot_val < 64:
+            self.outputs['potmeter_led'] = 1000
+        elif pot_val < 128:
+            self.outputs['potmeter_led'] = 1100
+        elif pot_val < 192:
+            self.outputs['potmeter_led'] = 1110
+        else:
+            self.outputs['potmeter_led'] = 1111
 
         """ Switch Logic """
         switch_val = self.get_input('switch')
-
-        if self.is_bug_active:
-
-            self.outputs['switch_led'] = not bool(switch_val)
-        else:
-            self.outputs['switch_led'] = bool(switch_val)
+        self.outputs['switch_led'] = switch_val
+        # if self.is_bug_active:
+        #
+        #     self.outputs['switch_led'] = not bool(switch_val)
+        # else:
+        #     self.outputs['switch_led'] = bool(switch_val)

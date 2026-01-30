@@ -72,9 +72,9 @@ class MainController:
             'pot_leds': []
         }
 
-        for i in range(1, 5):
-            is_on = self.model.outputs[f'potmeter_led_{i}']
-            colors['pot_leds'].append('green' if is_on else 'grey')
+        potleds = [int(c) for c in str(self.model.outputs['potmeter_led'])]
+        for led in potleds:
+            colors['pot_leds'].append('green' if led == 1 else 'grey')
 
 
         if self.view_dashboard:

@@ -38,7 +38,7 @@ class DashboardPanel:
 
             with ui.row().classes('w-full items-center justify-start gap-8'):
 
-                ui.knob(value=0, min=0, max=100, step=1, show_value=True,
+                ui.knob(value=0, min=0, max=255, step=1, show_value=True,
                         color='blue-500', track_color='blue-900', size='80px',
                         on_change=lambda e: self.callbacks['pot'](e.value))
 
