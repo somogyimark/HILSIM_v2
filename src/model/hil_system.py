@@ -31,12 +31,12 @@ class HILSystem:
             expected = int(args[1])
 
             if '_led' in source:
-                measured = 1 if self.dut.outputs.get(source) else 0
+                measured = self.dut.get_output(source)
             else:
                 measured = self.dut.get_input(source)
 
             result = "PASS" if (measured == expected) else "FAIL"
-            return {
+            data= {
                 'type': 'assert',
                 'source': source,
                 'measured': measured,
@@ -44,6 +44,9 @@ class HILSystem:
                 'expected': expected,
                 'result': result
             }
+            self.logger.log_assert(data)
+            return {'status': 'ok'}
+
 
         elif cmd_type == '-bug_on':
             self.dut.is_bug_active = True

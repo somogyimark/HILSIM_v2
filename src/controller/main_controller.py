@@ -31,9 +31,7 @@ class MainController:
         self.refresh_system()
 
     def on_switch_change(self, value):
-
-        val = 1 if value else 0
-        self.model.set_hw_input('switch', val)
+        self.model.set_hw_input('switch', value)
         self.refresh_system()
 
     def on_bug_toggle(self):
@@ -67,12 +65,12 @@ class MainController:
 
 
         colors = {
-            'temp': 'red' if self.model.outputs['temperature_led'] else 'grey',
+            'temp': 'red' if self.model.outputs['temp_led'] else 'grey',
             'switch': 'green' if self.model.outputs['switch_led'] else 'grey',
             'pot_leds': []
         }
 
-        potleds = [int(c) for c in str(self.model.outputs['potmeter_led'])]
+        potleds = [int(c) for c in str(self.model.outputs['pot_led'])]
         for led in potleds:
             colors['pot_leds'].append('green' if led == 1 else 'grey')
 

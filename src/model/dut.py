@@ -14,8 +14,8 @@ class DUT:
             'switch': None
         }
         self.outputs: Dict[str, int] = {
-            'potmeter_led': 1000,
-            'temperature_led': 0,
+            'pot_led': 1000,
+            'temp_led': 0,
             'switch_led': 0,
         }
 
@@ -36,27 +36,30 @@ class DUT:
             del self.swfi_inputs[component]
 
     def get_input(self, component: str) -> int:
-        if component in self.swfi_inputs and self.swfi_inputs[component] is not None:
+        if self.swfi_inputs[component] is not None:
             return self.swfi_inputs[component]
-        return self.hw_inputs.get(component, 0)
+        return self.hw_inputs[component]
+
+    def get_output(self, component: str) -> int:
+            return self.outputs[component]
 
     def update_firmware(self):
         """ temperature logic """
-        if self.hw_inputs['temperature'] > 30:
-            self.outputs['temperature_led'] = 1
+        if self.get_input('temperature') > 30:
+            self.outputs['temp_led'] = 1
         else:
-            self.outputs['temperature_led'] = 0
+            self.outputs['temp_led'] = 0
 
         """ Potmeter logic """
         pot_val = self.get_input('potmeter')
         if pot_val < 64:
-            self.outputs['potmeter_led'] = 1000
+            self.outputs['pot_led'] = 1000
         elif pot_val < 128:
-            self.outputs['potmeter_led'] = 1100
+            self.outputs['pot_led'] = 1100
         elif pot_val < 192:
-            self.outputs['potmeter_led'] = 1110
+            self.outputs['pot_led'] = 1110
         else:
-            self.outputs['potmeter_led'] = 1111
+            self.outputs['pot_led'] = 1111
 
         """ Switch Logic """
         switch_val = self.get_input('switch')
