@@ -1,7 +1,10 @@
 import os
 from datetime import datetime
 from src.utils import HTML_STYLE
+import socket
 
+def get_hostname() -> str:
+    return socket.gethostname()
 
 class HtmlLogger:
     def __init__(self):
@@ -15,8 +18,8 @@ class HtmlLogger:
         with open(self.filepath, 'w', encoding='utf-8') as f:
             f.write(f"<html><head>{HTML_STYLE}</head><body>")
             f.write(f"<div class='div-base header'><h1>LOG CREATED: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</h1>")
-            f.write(f"<h3>HOST: ???</h3>")
-            f.write(f"<h3>FROM: ???</h3></div>")
+            f.write(f"<h3>HOST: {get_hostname()}</h3>")
+            f.write(f"<h3>FROM: HILSIM</h3></div>")
 
     def log_comment(self, text: str):
         self._write("<div class='div-base task-log'>")
@@ -34,30 +37,31 @@ class HtmlLogger:
         item: {'param': 'temp', 'expected': 30, 'actual': 25, 'passed': False}
         """
         self._write("<div class='div-base task-log'>")
-        res_class = "pass" if item['passed'] else "fail"
-        res_text = "PASS" if item['passed'] else "FAIL"
+        res_class = "pass" if item['result'] == "PASS" else "fail"
 
         # Minden Assert külön 'div-base'-be kerül, hogy a CSS absolute pozicionálása
         # (left: 0, top: 0) ezen a dobozon belül legyen érvényes!
         html = f"""
             <div class='assert-header'>
-                <h2>ASSERT</h2>
-                <span>Check</span>
+                <h2>Assert</h2>
+                <span>{datetime.now().strftime("%H:%M:%S")}</span>
             </div>
 
             <div class='assert-results'>
                 <div class='assert-row-header'>
-                    <div>Parameter</div>
+                    <div>Source</div>
+                    <div>Measured</div>
+                    <div>Assert Type</div>
                     <div>Expected</div>
-                    <div>Actual</div>
                     <div>Result</div>
                 </div>
 
                 <div class='assert-row-data'>
-                    <div>{item['param']}</div>
+                    <div>{item['source']}</div>
+                    <div>{item['measured']}</div>
+                    <div>{item['assertType']}</div>
                     <div>{item['expected']}</div>
-                    <div>{item['actual']}</div>
-                    <div class='{res_class}'>{res_text}</div>
+                    <div class='{res_class}'>{item['result']}</div>
                 </div>
             </div>
         """

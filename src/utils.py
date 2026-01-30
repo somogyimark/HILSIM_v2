@@ -1,13 +1,16 @@
 import os
 from nicegui import  app
 from pathlib import Path
+from image_base64 import image_to_base64
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-app.add_static_files('/assets', BASE_DIR / 'assets')
+LOGO_PATH = BASE_DIR / "assets" / "logo.png"
 
-HTML_STYLE = """
+LOGO_BASE64 = image_to_base64(LOGO_PATH)
+
+HTML_STYLE = f"""
 <style>
-    body {
+    body {{
         background-color: #002b3e;
         /* background: radial-gradient(#00608b, #002b3e); */
         color: #edf2f4;
@@ -20,8 +23,8 @@ HTML_STYLE = """
 
         width: 1350px;
         margin: auto;
-    }
-    .div-base{
+    }}
+    .div-base{{
     margin: 10px;
     background-color: #005f8bb4;
     border-radius: 20px;
@@ -31,42 +34,43 @@ HTML_STYLE = """
     padding-bottom: 5px;
     backdrop-filter: blur(8px);
     position: relative;
-    }
-    .header{
+    }}
+    .header{{
     margin-bottom: 40px;
     font-family: Arial, Helvetica, sans-serif;
     padding-bottom: 20px;
-    }
+    }}
     
-    .header > h1{
+    .header > h1{{
         margin-bottom: 10px;
-    }
+    }}
     
-    .header > h3{
+    .header > h3{{
         margin-top: 5px;
         margin-bottom: 5px;
-    }
+    }}
     
-    .task-log > h2{
+    .task-log > h2{{
         margin-top: 10px;
         margin-bottom: 5px;
         font-family: Arial, Helvetica, sans-serif;
-    }
+    }}
     
-    .task-log > span{
+    .task-log > span{{
         font-style: italic;
         font-size: 18px;
         display: inline-block;
         margin-bottom: 10px;
-    }
+    }}
     
-    .comment{
-        padding: 20px;
+    .comment{{
+        padding-top: 15px;
+        padding-bottom: 15px;
         font-size: 18px;
         font-style: italic;
-    }
+    }}
     
-    .assert-header{
+    .assert-header{{
         display: inline-block;
         background-color: #003c57b2;
         padding-left: 15px;
@@ -80,64 +84,64 @@ HTML_STYLE = """
         margin-bottom: 5px;
         height: calc(100% - 10px);
         width: 120px;
-    }
+    }}
     
-    .assert-header > h2{
+    .assert-header > h2{{
         margin-top: 10px;
         margin-bottom: 5px;
         font-family: Arial, Helvetica, sans-serif;
-    }
+    }}
     
-    .assert-header > span{
+    .assert-header > span{{
         font-style: italic;
         font-size: 18px;
         display: inline-block;
         margin-bottom: 10px;
-    }
+    }}
     
-    .assert-results{
+    .assert-results{{
         display: inline-block;
-        margin-left: 160px;
-    }
+        margin-left: 162px;
+    }}
     
-    .assert-row-header{
+    .assert-row-header{{
         display: inline-block;
-    }
+    }}
     
-    .assert-row-header > div{
+    .assert-row-header > div{{
         display: inline-block;
         background-color: #002b3fd7;
         padding: 10px;
         border-radius: 10px;
-        margin-left: 1px;
-        margin-right: 1px;
+        margin-left: -1px;
+        margin-right: -1px;
         width: 200px;
         text-align: center;
-    }
+    }}
     
-    .assert-row-data > div{
+    .assert-row-data > div{{
         display: inline-block;
         background-color: #003c57b2;
         padding: 10px;
         border-radius: 10px;
-        margin-left: 1px;
-        margin-right: 1px;
+        margin-left: -1px;
+        margin-right: -1px;
         margin-top: 2px;
         width: 200px;
         text-align: center;
-    }
+    }}
     
-    .assert-row-data > .pass{
+    .assert-row-data > .pass{{
         background-color: #38b000;
         font-family: Arial, Helvetica, sans-serif;
         font-weight: bold;
-    }
+    }}
     
-    .assert-row-data > .fail{
+    .assert-row-data > .fail{{
         background-color: #ba181b;
         font-family: Arial, Helvetica, sans-serif;
         font-weight: bold;
-    }
+    }}
 </style>
 """
 

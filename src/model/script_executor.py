@@ -17,7 +17,6 @@ class ScriptExecutor:
 
         self.hil.logger.start_log("Batch Execution")
 
-        assert_buffer = []
 
         try:
             for i, line in enumerate(lines):
@@ -40,7 +39,7 @@ class ScriptExecutor:
                         result = self.hil.process_command(cmd_type, args)
                         self.hil.logger.log_assert(result)
 
-                        if not result['passed']:
+                        if not result['result']:
                             log_callback(f"ASSERT FAIL: {args}")
 
                     elif cmd_type == '-wait':

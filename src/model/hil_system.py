@@ -1,5 +1,6 @@
 from src.model.dut import DUT
 from src.model.logger import HtmlLogger
+from datetime import datetime
 
 
 class HILSystem:
@@ -11,47 +12,48 @@ class HILSystem:
 
 
         if cmd_type in ['-hwfi', '-swfi']:
-            target = args[0]  # pl. 'temp'
+            source = args[0]  # pl. 'temp'
             value = int(args[1])  # pl. 70
 
             if cmd_type == '-hwfi':
-                self.dut.set_hw_input(target, value)
-                self.logger.log_generic("HWFI Action", f"Set HW input '{target}' to {value}")
+                self.dut.set_hw_input(source, value)
+                self.logger.log_generic(f"HWFI {source} {value}", datetime.now().strftime("%H:%M:%S"))
             else:
-                self.dut.set_swfi_input(target, value)
-                self.logger.log_generic("SWFI Action", f"Set SW injection '{target}' to {value}")
+                self.dut.set_swfi_input(source, value)
+                self.logger.log_generic(f"SWFI {source} {value}", datetime.now().strftime("%H:%M:%S"))
 
             self.dut.update_firmware()
             return {'status': 'ok'}
 
         elif cmd_type == '-assert':
 
-            target = args[0]
+            source = args[0]
             expected = int(args[1])
 
-            if '_led' in target:
-                actual = 1 if self.dut.outputs.get(target) else 0
+            if '_led' in source:
+                measured = 1 if self.dut.outputs.get(source) else 0
             else:
-                actual = self.dut.get_input(target)
+                measured = self.dut.get_input(source)
 
-            passed = (actual == expected)
+            result = "PASS" if (measured == expected) else "FAIL"
             return {
                 'type': 'assert',
-                'param': target,
+                'source': source,
+                'measured': measured,
+                'assertType': '=',
                 'expected': expected,
-                'actual': actual,
-                'passed': passed
+                'result': result
             }
 
         elif cmd_type == '-bug_on':
             self.dut.is_bug_active = True
             self.dut.update_firmware()
-            self.logger.log_generic("BUG SIMULATION", "Bug Mode Enabled")
+            self.logger.log_generic("BUG_ON", datetime.now().strftime("%H:%M:%S"))
             return {'status': 'ok'}
 
         elif cmd_type == '-init':
             self.dut.__init__()
-            self.logger.log_generic("System Init", "HIL System Initialized to default state.")
+            self.logger.log_generic("Initialize", datetime.now().strftime("%H:%M:%S"))
             return {'status': 'ok'}
 
         elif cmd_type == '-start':
