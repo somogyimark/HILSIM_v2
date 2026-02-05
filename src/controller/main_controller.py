@@ -90,14 +90,51 @@ class MainController:
         except Exception as e:
             print(f"Dialog Error: {e}")
 
-    def save_script_to_file(self, content: str):
+    async def save_script_to_file(self, content: str):
+        if not app.native.main_window:
+            if self.view_editor:
+                self.view_editor.append_log("Error: Not running in Native mode!")
+            return
+
+        initial_dir = os.path.abspath("scripts")
+
+        dialog_type_open = 30
+
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"scripts/test_script_{timestamp}.bat"
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(content)
-        if self.view_editor:
-            self.view_editor.append_log(f"Script saved to: {filename}")
-            ui.notify(f"Saved: {filename}", type='positive')
+
+        try:
+            file_selection = await app.native.main_window.create_file_dialog(
+                dialog_type=dialog_type_open,
+                directory=initial_dir,
+                allow_multiple=False,
+                save_filename= filename,
+                file_types=('Batch files (*.bat)', 'All files (*.*)')
+            )
+            
+            if not file_selection:
+                return
+
+            final_path = None
+
+            if file_selection:
+                if isinstance(file_selection, (list, tuple)):
+                    if len(file_selection) > 0:
+                        final_path = file_selection[0]
+                elif isinstance(file_selection, str):
+                    final_path = file_selection
+
+            try:
+                with open(final_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                if self.view_editor:
+                    ui.notify(f"Saved: {final_path}", type='positive')
+
+            except Exception as e:
+                if self.view_editor:
+                    ui.notify(f"Error reading file: {str(e)}", type='negative')
+        except Exception as e:
+            print(f"Dialog Error: {e}")
 
     def open_logs_folder(self):
         path = os.path.abspath("logs")
