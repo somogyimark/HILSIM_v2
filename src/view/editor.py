@@ -28,7 +28,7 @@ class EditorPanel:
             with ui.row().classes('w-full justify-between mt-2'):
 
                 with ui.row():
-                    ui.button('LOAD', on_click=self.open_load_dialog, color='blue')
+                    ui.button('LOAD', on_click=self.callbacks['load'], color='blue')
 
                     ui.button('SAVE',
                               on_click=lambda: self.callbacks['save'](self.editor.value),
@@ -55,31 +55,5 @@ class EditorPanel:
     def append_log(self, message: str):
         self.log_output.push(message)
 
-    def open_load_dialog(self):
-        with ui.dialog() as dialog, ui.card():
-            ui.label("'Select Script from /scripts'").classes('text-lg font-bold')
-
-            try:
-                files = [f for f in os.listdir('scripts') if f.endswith('.bat')]
-            except FileNotFoundError:
-                files = []
-                ui.label('Scripts folder not found!').classes('text-red-500')
-
-            def load_file(fname):
-                try:
-                    with open(f"scripts/{fname}", 'r', encoding='utf-8') as f:
-                        self.editor.value = f.read()
-                    self.append_log(f"Loaded: {fname}")
-                    dialog.close()
-                except Exception as e:
-                    ui.notify(f"Error loading file: {e}", type='negative')
-
-            with ui.column().classes('gap-2 w-64'):
-                if not files:
-                    ui.label('No .bat files found.')
-                for f in files:
-                    ui.button(f, on_click=lambda name=f: load_file(name)).classes('w-full')
-
-                ui.button('Cancel', on_click=dialog.close, color='red').classes('mt-2')
-
-        dialog.open()
+    def set_content(self, text: str):
+        self.editor.value = text

@@ -1,6 +1,8 @@
 import os
 from datetime import datetime
-from nicegui import ui
+
+import webview
+from nicegui import ui, events, app
 from src.model.hil_system import HILSystem
 from src.model.script_executor import ScriptExecutor
 from src.view.layout import MainLayout
@@ -46,8 +48,47 @@ class MainController:
             await self.executor.run_script(code, self.view_editor.append_log)
             self.refresh_system()
 
-    def on_load_script(self):
-        pass
+    async def on_load_script(self):
+        if not app.native.main_window:
+            if self.view_editor:
+                self.view_editor.append_log("Error: Not running in Native mode!")
+            return
+
+        initial_dir = os.path.abspath("scripts")
+
+        dialog_type_open = 10
+
+        try:
+            file_selection = await app.native.main_window.create_file_dialog(
+                dialog_type=dialog_type_open,
+                directory=initial_dir,
+                allow_multiple=False,
+                file_types=('Batch files (*.bat)', 'All files (*.*)')
+            )
+
+            if file_selection and len(file_selection) > 0:
+                file_path = file_selection[0]
+
+                if isinstance(file_path, (list, tuple)):
+                    file_path = file_path[0]
+
+                if file_path.endswith(".bat"):
+                    try:
+                        with open(file_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+
+                        if self.view_editor:
+                            self.view_editor.set_content(content)
+                            ui.notify(f"Loaded: {os.path.basename(file_path)}", type='positive')
+
+                    except Exception as e:
+                        if self.view_editor:
+                            ui.notify(f"Error reading file: {str(e)}", type='negative')
+                else:
+                    ui.notify(f"Error reading file: Wrong file type: [{file_path}]", type='negative')
+
+        except Exception as e:
+            print(f"Dialog Error: {e}")
 
     def save_script_to_file(self, content: str):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
