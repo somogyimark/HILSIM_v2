@@ -3,6 +3,7 @@ from datetime import datetime
 from nicegui import ui
 from src.model.hil_system import HILSystem
 from src.model.script_executor import ScriptExecutor
+from src.view.layout import MainLayout
 
 
 class MainController:
@@ -15,9 +16,10 @@ class MainController:
         self.view_dashboard = None
         self.view_editor = None
 
-    def register_views(self, dashboard, editor):
-        self.view_dashboard = dashboard
-        self.view_editor = editor
+    def register_layout(self, layout: MainLayout):
+        self.view_layout = layout
+        self.view_dashboard = layout.dashboard
+        self.view_editor = layout.editor
         self.refresh_system()
 
     # --- Event Handlers (User Inputs) ---

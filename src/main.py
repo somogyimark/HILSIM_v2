@@ -3,7 +3,7 @@ from nicegui import ui, app
 from model.dut import DUT
 from model.hil_system import HILSystem
 from controller.main_controller import MainController
-from view.layout import build_interface
+from view.layout import MainLayout
 from utils import ensure_directories, resource_path, setup_taskbar_icon
 
 def main():
@@ -21,8 +21,8 @@ def main():
 
     @ui.page('/')
     def index():
-        dashboard, editor = build_interface(controller)
-        controller.register_views(dashboard, editor)
+        layout = MainLayout(controller)
+        controller.register_layout(layout)
 
     ui.run(
         title='HIL SIM',
