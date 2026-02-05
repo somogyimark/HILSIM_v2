@@ -12,8 +12,8 @@ class HILSystem:
 
 
         if cmd_type in ['-hwfi', '-swfi']:
-            source = args[0]  # pl. 'temp'
-            value = int(args[1])  # pl. 70
+            source = args[0]
+            value = int(args[1])
 
             if cmd_type == '-hwfi':
                 self.dut.set_hw_input(source, value)

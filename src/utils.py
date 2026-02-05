@@ -1,11 +1,30 @@
 import os
-from nicegui import  app
-from pathlib import Path
-from image_base64 import image_to_base64
+import sys
+import ctypes
+from src.image_base64 import image_to_base64
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-LOGO_PATH = BASE_DIR / "assets" / "logo.png"
+def ensure_directories():
 
+    os.makedirs('scripts', exist_ok=True)
+    os.makedirs('logs', exist_ok=True)
+
+def setup_taskbar_icon():
+    if sys.platform.startswith('win'):
+        try:
+            myappid = 'mycompany.hilsim.simulator.v1'
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        except Exception as e:
+            print(f"Could not set AppUserModelID: {e}")
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+assets_folder = resource_path('assets')
+LOGO_PATH = resource_path(os.path.join('assets', 'logo.png'))
 LOGO_BASE64 = image_to_base64(LOGO_PATH)
 
 HTML_STYLE = f"""
@@ -144,9 +163,3 @@ HTML_STYLE = f"""
     }}
 </style>
 """
-
-
-def ensure_directories():
-
-    os.makedirs('scripts', exist_ok=True)
-    os.makedirs('logs', exist_ok=True)

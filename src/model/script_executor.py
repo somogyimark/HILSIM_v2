@@ -35,13 +35,6 @@ class ScriptExecutor:
                     cmd_type = parts[1]
                     args = parts[2:]
 
-                    # if cmd_type == '-assert':
-                    #     result = self.hil.process_command(cmd_type, args)
-                    #     self.hil.logger.log_assert(result)
-                    #
-                    #     if not result['result']:
-                    #         log_callback(f"ASSERT FAIL: {args}")
-
                     if cmd_type == '-wait':
                         seconds = float(args[0])
                         log_callback(f"... Waiting {seconds}s ...")
