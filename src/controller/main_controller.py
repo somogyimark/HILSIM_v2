@@ -177,3 +177,7 @@ class MainController:
 
         if self.view_dashboard:
             self.view_dashboard.update_view(colors, self.model.is_bug_active)
+
+    def set_execution_delay(self, value):
+        delay = float(value)
+        self.executor.step_delay = delay

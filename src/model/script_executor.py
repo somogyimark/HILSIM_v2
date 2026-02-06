@@ -6,6 +6,7 @@ class ScriptExecutor:
     def __init__(self, hil_system: HILSystem):
         self.hil = hil_system
         self.is_running = False
+        self.step_delay = 0.0
 
     async def run_script(self, script_text: str, log_callback):
         self.is_running = True
@@ -22,6 +23,9 @@ class ScriptExecutor:
         try:
             for i, line in enumerate(lines):
                 if not self.is_running: break
+
+                if self.step_delay > 0:
+                    await asyncio.sleep(self.step_delay)
 
                 log_callback(f"Line {i + 1}: {line}")
 

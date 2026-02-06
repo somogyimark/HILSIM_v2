@@ -77,7 +77,7 @@ class HILSystem:
         self.dut.swfi_inputs['pot'] = None
         self.dut.swfi_inputs['temp'] = None
         self.dut.swfi_inputs['switch'] = None
-        
+
         self.dut.is_bug_active = False
 
         self.dut.update_firmware()
