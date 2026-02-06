@@ -68,3 +68,16 @@ class HILSystem:
             return {'status': 'ok'}
 
         return {'status': 'unknown'}
+
+    def init_dut(self):
+        self.dut.hw_inputs['pot'] = 0
+        self.dut.hw_inputs['temp'] = 25
+        self.dut.hw_inputs['switch'] = 0
+
+        self.dut.swfi_inputs['pot'] = None
+        self.dut.swfi_inputs['temp'] = None
+        self.dut.swfi_inputs['switch'] = None
+        
+        self.dut.is_bug_active = False
+
+        self.dut.update_firmware()

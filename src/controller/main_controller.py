@@ -78,6 +78,8 @@ class MainController:
                         if self.view_editor:
                             self.view_editor.set_content(content)
                             self.view_editor.current_file_path = file_path
+                            filename = os.path.basename(file_path)
+                            self.view_editor.update_curr_filename(filename)
                             ui.notify(f"Loaded: {os.path.basename(file_path)}", type='positive')
 
                     except Exception as e:
