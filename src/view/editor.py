@@ -8,9 +8,10 @@ class EditorPanel:
         callbacks: Dict {'run': func, 'save': func, 'load': func, 'logs': func}
         """
         self.callbacks = callbacks
+        self.current_file_path = None
 
         with ui.card().classes('w-full h-full column no-wrap'):
-            ui.label('Test Automation & Fault Injection').classes('text-xl font-bold text-gray-200')
+            self.current_file_name = ui.label().classes('text-xl font-bold text-gray-200 placeholder')
 
             default_code = (
                 "batchControl -init\n"
@@ -31,7 +32,7 @@ class EditorPanel:
                     ui.button('LOAD', on_click=self.callbacks['load'], color='blue')
 
                     ui.button('SAVE',
-                              on_click=lambda: self.callbacks['save'](self.editor.value),
+                              on_click=lambda: self.callbacks['save'](self.editor.value, self.current_file_path),
                               color='blue')
 
                     ui.button('LOGS', on_click=self.callbacks['logs'], color='grey')
@@ -57,3 +58,12 @@ class EditorPanel:
 
     def set_content(self, text: str):
         self.editor.value = text
+
+    def update_curr_filename(self, text: str):
+        self.current_file_name.set_text(text)
+
+    def get_curr_filename(self):
+        return self.current_file.text
+
+    def set_file_path(self, path):
+        self.current_file_path = path

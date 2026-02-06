@@ -77,6 +77,7 @@ class MainController:
 
                         if self.view_editor:
                             self.view_editor.set_content(content)
+                            self.view_editor.current_file_path = file_path
                             ui.notify(f"Loaded: {os.path.basename(file_path)}", type='positive')
 
                     except Exception as e:
@@ -88,7 +89,24 @@ class MainController:
         except Exception as e:
             print(f"Dialog Error: {e}")
 
-    async def save_script_to_file(self, content: str):
+    async def save_script_to_file(self, content: str, filepath: None):
+
+        if filepath:
+            try:
+                with open(filepath, 'w', encoding='utf-8') as f:
+                    f.write(content)
+
+                # Értesítés
+                if self.view_editor:
+                    short_name = os.path.basename(filepath)
+                    ui.notify(f"Saved: {short_name}", type='positive')
+                return  # Itt kilépünk, nem kell dialógus!
+
+            except Exception as e:
+                if self.view_editor:
+                    ui.notify(f"Error saving file: {str(e)}", type='negative')
+                return
+
         if not app.native.main_window:
             if self.view_editor:
                 self.view_editor.append_log("Error: Not running in Native mode!")
@@ -99,14 +117,13 @@ class MainController:
         dialog_type_open = 30
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"scripts/test_script_{timestamp}.bat"
 
         try:
             file_selection = await app.native.main_window.create_file_dialog(
                 dialog_type=dialog_type_open,
                 directory=initial_dir,
                 allow_multiple=False,
-                save_filename= filename,
+                save_filename= f'test_script_{timestamp}.bat',
                 file_types=('Batch files (*.bat)', 'All files (*.*)')
             )
             
@@ -126,7 +143,10 @@ class MainController:
                 with open(final_path, 'w', encoding='utf-8') as f:
                     f.write(content)
                 if self.view_editor:
-                    ui.notify(f"Saved: {final_path}", type='positive')
+                    self.view_editor.current_file_path = final_path
+                    filename = os.path.basename(final_path)
+                    self.view_editor.update_curr_filename(filename)
+                    ui.notify(f"Saved: {filename}", type='positive')
 
             except Exception as e:
                 if self.view_editor:
