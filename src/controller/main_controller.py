@@ -174,9 +174,15 @@ class MainController:
         for led in potleds:
             colors['pot_leds'].append('green' if led == 1 else 'grey')
 
+        model_data = {
+            'temp': self.model.hw_inputs['temp'],
+            'pot': self.model.hw_inputs['pot'],
+            'switch': bool(self.model.hw_inputs['switch'])
+        }
+
 
         if self.view_dashboard:
-            self.view_dashboard.update_view(colors, self.model.is_bug_active)
+            self.view_dashboard.update_view(model_data, colors, self.model.is_bug_active)
 
     def set_execution_delay(self, value):
         delay = float(value)

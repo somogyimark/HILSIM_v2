@@ -21,8 +21,6 @@ class HILSystem:
             else:
                 self.dut.set_swfi_input(source, value)
                 self.logger.log_generic(f"SWFI {source} {value}", datetime.now().strftime("%H:%M:%S"))
-
-            self.dut.update_firmware()
             return {'status': 'ok'}
 
         elif cmd_type == '-assert':

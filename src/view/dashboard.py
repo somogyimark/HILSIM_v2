@@ -25,7 +25,7 @@ class DashboardPanel:
 
             with ui.row().classes('w-full items-center justify-between gap-8'):
 
-                ui.knob(value=25, min=0, max=100, step=1, show_value=True,
+                self.temp_knob = ui.knob(value=25, min=0, max=100, step=1, show_value=True,
                         color='red', track_color='grey-800', size='70px',
                         on_change=lambda e: self.callbacks['temp'](e.value))
 
@@ -41,7 +41,7 @@ class DashboardPanel:
 
             with ui.row().classes('w-full items-center justify-between gap-8'):
 
-                ui.knob(value=0, min=0, max=255, step=1, show_value=True,
+                self.pot_knob = ui.knob(value=0, min=0, max=255, step=1, show_value=True,
                         color='blue-500', track_color='blue-900', size='80px',
                         on_change=lambda e: self.callbacks['pot'](e.value))
 
@@ -59,10 +59,15 @@ class DashboardPanel:
             ui.label('Master Switch').classes('font-bold')
 
             with ui.row().classes('w-full items-center mt-2 justify-between'):
-                ui.switch(on_change=lambda e: self.callbacks['switch'](e.value))
+                self.switch = ui.switch(on_change=lambda e: self.callbacks['switch'](e.value))
                 self.switch_led = ui.icon('power_settings_new', size='lg', color='grey').classes('ml-4')
 
-    def update_view(self, feedback_colors: dict, bug_active: bool):
+    def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
+
+        self.temp_knob.value = model_data['temp']
+        self.pot_knob.value = model_data['pot']
+        self.switch.value = model_data['switch']
+
         # Temp update
         self.temp_icon.props(f'color={feedback_colors["temp"]}')
 
