@@ -8,9 +8,10 @@ class ScriptExecutor:
         self.is_running = False
         self.step_delay = 0.0
 
-    async def run_script(self, script_text: str, log_callback):
+    async def run_script(self, script_text: str, log_callback, update_callback):
         self.is_running = True
         self.hil.init_dut()
+        update_callback()
         lines = [line.strip() for line in script_text.split('\n') if line.strip()]
 
         if not self._validate_structure(lines, log_callback):
@@ -48,12 +49,18 @@ class ScriptExecutor:
                     else:
                         self.hil.process_command(cmd_type, args)
 
+                        if update_callback:
+                            update_callback()
+
         except Exception as e:
             log_callback(f"CRITICAL ERROR: {str(e)}")
         finally:
             log_callback("... Resetting DUT to initial state ...")
             try:
                 self.hil.init_dut()
+
+                if update_callback:
+                    update_callback()
             except Exception as reset_err:
                 log_callback(f"Error during reset: {reset_err}")
 

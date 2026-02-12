@@ -50,7 +50,6 @@ class HILSystem:
 
         elif cmd_type == '-bug_on':
             self.dut.is_bug_active = True
-            self.dut.update_firmware()
             self.logger.log_generic("BUG_ON", datetime.now().strftime("%H:%M:%S"))
             return {'status': 'ok'}
 

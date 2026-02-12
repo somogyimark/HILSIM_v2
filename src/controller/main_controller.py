@@ -36,14 +36,14 @@ class MainController:
         self.model.set_hw_input('switch', value)
         self.refresh_system()
 
-    def on_bug_toggle(self):
+    def on_bug_toggle(self, value):
 
-        self.model.is_bug_active = not self.model.is_bug_active
+        self.model.is_bug_active = value
         self.refresh_system()
 
     async def on_run_script(self, code: str):
         if self.view_editor:
-            await self.executor.run_script(code, self.view_editor.append_log)
+            await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
             self.refresh_system()
 
     async def on_load_script(self):

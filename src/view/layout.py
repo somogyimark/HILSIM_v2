@@ -54,9 +54,9 @@ class MainLayout:
                 ui.label('Dark Mode').classes('text-gray-700 font-medium')
                 ui.switch().bind_value(self.dark_mode_ctrl)
 
-            ui.separator().classes('mb-4')
+            # ui.separator().classes('mb-4')
 
-            ui.label('Script Execution Speed').classes('text-gray-700 font-medium mb-1')
+            ui.label('Command Execution Delay').classes('text-gray-700 font-medium mb-2')
 
             with ui.column().classes('w-full gap-0'):
 
@@ -64,6 +64,14 @@ class MainLayout:
                           value=self.controller.executor.step_delay) \
                     .on('update:model-value', lambda e: self._update_delay(e.args)) \
                     .props('label-always')
+
+            with ui.row().classes('w-full justify-between items-center mb-4'):
+                ui.label('Bug Injection Active').classes('text-gray-700 font-medium text-red-600')
+
+                current_state = self.controller.model.is_bug_active
+                ui.switch(value=current_state,
+                          on_change=lambda e: self.controller.on_bug_toggle(e.value)) \
+                    .props('color=red')
 
             with ui.row().classes('w-full justify-end mt-6'):
                 ui.button('Close', on_click=dialog.close, color='primary')
