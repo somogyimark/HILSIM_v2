@@ -41,10 +41,34 @@ class MainController:
         self.model.is_bug_active = value
         self.refresh_system()
 
-    async def on_run_script(self, code: str):
-        if self.view_editor:
-            await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
-            self.refresh_system()
+    async def on_run_script(self, code: str, file_path=None):
+
+        if not file_path:
+            save = await self.view_editor.open_save_dialog()
+
+            if save is None:
+                return
+
+            if save:
+                save_success = await self.save_script_to_file(code, None)
+
+                if not save_success:
+                    ui.notify("Run cancelled (Script not saved).", type='info')
+                    return
+
+                if self.view_editor:
+                    file_path = self.view_editor.current_file_path
+                if self.view_editor:
+                    await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
+                    self.refresh_system()
+            else:
+                if self.view_editor:
+                    await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
+                    self.refresh_system()
+        else:
+            if self.view_editor:
+                await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
+                self.refresh_system()
 
     async def on_load_script(self):
         if not app.native.main_window:
@@ -91,7 +115,7 @@ class MainController:
         except Exception as e:
             print(f"Dialog Error: {e}")
 
-    async def save_script_to_file(self, content: str, filepath: None):
+    async def save_script_to_file(self, content: str, filepath: None) -> bool:
 
         if filepath:
             try:
@@ -102,17 +126,16 @@ class MainController:
                 if self.view_editor:
                     short_name = os.path.basename(filepath)
                     ui.notify(f"Saved: {short_name}", type='positive')
-                return  # Itt kilépünk, nem kell dialógus!
-
+                return True
             except Exception as e:
                 if self.view_editor:
                     ui.notify(f"Error saving file: {str(e)}", type='negative')
-                return
+                return False
 
         if not app.native.main_window:
             if self.view_editor:
                 self.view_editor.append_log("Error: Not running in Native mode!")
-            return
+            return False
 
         initial_dir = os.path.abspath("scripts")
 
@@ -130,7 +153,7 @@ class MainController:
             )
             
             if not file_selection:
-                return
+                return False
 
             final_path = None
 
@@ -149,12 +172,16 @@ class MainController:
                     filename = os.path.basename(final_path)
                     self.view_editor.update_curr_filename(filename)
                     ui.notify(f"Saved: {filename}", type='positive')
+                    return True
 
             except Exception as e:
                 if self.view_editor:
                     ui.notify(f"Error reading file: {str(e)}", type='negative')
+                return False
+            return False
         except Exception as e:
             print(f"Dialog Error: {e}")
+            return False
 
     def open_logs_folder(self):
         path = os.path.abspath("logs")

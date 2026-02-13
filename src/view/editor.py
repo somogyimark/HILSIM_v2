@@ -1,3 +1,5 @@
+from turtle import color
+
 from nicegui import ui
 import os
 
@@ -51,7 +53,7 @@ class EditorPanel:
             self.log_output = ui.log().classes('w-full h-48 bg-gray-900 text-green-400 p-2 rounded font-mono text-xs')
 
     async def handle_run(self):
-        await self.callbacks['run'](self.editor.value)
+        await self.callbacks['run'](self.editor.value, self.current_file_path)
 
     def append_log(self, message: str):
         self.log_output.push(message)
@@ -67,3 +69,19 @@ class EditorPanel:
 
     def set_file_path(self, path):
         self.current_file_path = path
+
+    async def open_save_dialog(self) -> bool:
+        with ui.dialog() as dialog, ui.card().classes('w-96 bg-gray-100 p-6'):
+            ui.label('Do you want to save?').classes('text-xl font-bold mb-4 text-gray-800')
+
+            with ui.row().classes('w-full h-full column wrap'):
+                with ui.column():
+                    ui.button('YES', on_click= lambda: dialog.submit(True), color='blue')
+                with ui.column():
+                    ui.button('NO',on_click= lambda: dialog.submit(False), color='red')
+
+            with ui.row().classes('w-full justify-end mt-6'):
+                ui.button('Close', on_click=dialog.close, color='primary')
+
+        result = await dialog
+        return result
