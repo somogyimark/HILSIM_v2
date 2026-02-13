@@ -43,32 +43,35 @@ class MainController:
 
     async def on_run_script(self, code: str, file_path=None):
 
-        if not file_path:
-            save = await self.view_editor.open_save_dialog()
+        is_modified = False
+        if self.view_editor:
+            if code != self.view_editor.last_saved_content:
+                is_modified = True
 
-            if save is None:
+        should_ask_save = (not file_path) or is_modified
+
+        if should_ask_save:
+
+            save_choice = await self.view_editor.open_save_dialog()
+
+            if save_choice is None:
                 return
 
-            if save:
-                save_success = await self.save_script_to_file(code, None)
+            if save_choice is True:
+
+                save_success = await self.save_script_to_file(code, file_path)
 
                 if not save_success:
-                    ui.notify("Run cancelled (Script not saved).", type='info')
+                    ui.notify("Run cancelled (Save failed).", type='warning')
                     return
 
-                if self.view_editor:
-                    file_path = self.view_editor.current_file_path
-                if self.view_editor:
-                    await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
-                    self.refresh_system()
-            else:
-                if self.view_editor:
-                    await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
-                    self.refresh_system()
-        else:
-            if self.view_editor:
-                await self.executor.run_script(code, self.view_editor.append_log, self.refresh_system)
-                self.refresh_system()
+        if self.view_editor:
+            await self.executor.run_script(
+                code,
+                self.view_editor.append_log,
+                self.refresh_system
+            )
+            self.refresh_system()
 
     async def on_load_script(self):
         if not app.native.main_window:
@@ -101,6 +104,7 @@ class MainController:
 
                         if self.view_editor:
                             self.view_editor.set_content(content)
+                            self.view_editor.mark_as_saved(content)
                             self.view_editor.current_file_path = file_path
                             filename = os.path.basename(file_path)
                             self.view_editor.update_curr_filename(filename)
@@ -125,6 +129,7 @@ class MainController:
                 # Értesítés
                 if self.view_editor:
                     short_name = os.path.basename(filepath)
+                    self.view_editor.mark_as_saved(content)
                     ui.notify(f"Saved: {short_name}", type='positive')
                 return True
             except Exception as e:
@@ -171,6 +176,7 @@ class MainController:
                     self.view_editor.current_file_path = final_path
                     filename = os.path.basename(final_path)
                     self.view_editor.update_curr_filename(filename)
+                    self.view_editor.mark_as_saved(content)
                     ui.notify(f"Saved: {filename}", type='positive')
                     return True
 

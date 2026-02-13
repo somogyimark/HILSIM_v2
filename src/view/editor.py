@@ -24,6 +24,8 @@ class EditorPanel:
                 "pause"
             )
 
+            self.last_saved_content = default_code
+
             self.editor = ui.codemirror(value=default_code, language='Python', theme='vscodeDark') \
                 .classes('w-full h-64 border border-gray-700 rounded')
 
@@ -69,6 +71,9 @@ class EditorPanel:
 
     def set_file_path(self, path):
         self.current_file_path = path
+
+    def mark_as_saved(self, text: str):
+        self.last_saved_content = text
 
     async def open_save_dialog(self) -> bool:
         with ui.dialog() as dialog, ui.card().classes('w-96 bg-gray-100 p-6'):
