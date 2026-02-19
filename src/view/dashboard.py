@@ -64,11 +64,8 @@ class DashboardPanel:
                 ).classes('scale-150 origin-left')
                 self.switch_led = ui.icon('power_settings_new', size='lg', color='grey').classes('ml-4')
 
-    def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
+    def update_view(self, feedback_colors: dict, bug_active: bool):
 
-        self.temp_knob.value = model_data['temp']
-        self.pot_knob.value = model_data['pot']
-        self.switch.value = model_data['switch']
 
         # Temp update
         self.temp_icon.props(f'color={feedback_colors["temp"]}')
