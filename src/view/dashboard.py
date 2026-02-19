@@ -56,10 +56,12 @@ class DashboardPanel:
             # ---------------------------------------------------------
             # 3. Switch Section
             # ---------------------------------------------------------
-            ui.label('Master Switch').classes('font-bold')
+            ui.label('Switch').classes('font-bold')
 
             with ui.row().classes('w-full items-center mt-2 justify-between'):
-                self.switch = ui.switch(on_change=lambda e: self.callbacks['switch'](e.value))
+                self.switch = ui.switch(
+                    on_change=lambda e: self.callbacks['switch'](e.value)
+                ).classes('scale-150 origin-left')
                 self.switch_led = ui.icon('power_settings_new', size='lg', color='grey').classes('ml-4')
 
     def update_view(self, model_data: dict, feedback_colors: dict, bug_active: bool):
