@@ -38,7 +38,7 @@ class MainController:
 
     def on_bug_toggle(self, value):
 
-        self.model.is_bug_active = value
+        self.model.set_bug_active(value)
         self.refresh_system()
 
     async def on_run_script(self, code: str, file_path=None):
@@ -210,7 +210,7 @@ class MainController:
 
 
         if self.view_dashboard:
-            self.view_dashboard.update_view(colors, self.model.is_bug_active)
+            self.view_dashboard.update_view(colors, self.model.bug)
 
     def set_execution_delay(self, value):
         delay = float(value)

@@ -1,4 +1,5 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
+import random
 
 
 class DUT:
@@ -19,7 +20,7 @@ class DUT:
             'switch_led': 0,
         }
 
-        self.is_bug_active: bool = False
+        self.bug: Optional[int] = None
 
     def set_hw_input(self, component: str, value: int):
         self.hw_inputs[component] = value
@@ -43,14 +44,16 @@ class DUT:
     def get_output(self, component: str) -> int:
             return self.outputs[component]
 
-    def update_firmware(self):
-        """ temperature logic """
-        if self.get_input('temp') > 30:
-            self.outputs['temp_led'] = 1
+    def set_bug_active(self, value: bool):
+        if value:
+            self.bug = random.randint(1, 4)
         else:
-            self.outputs['temp_led'] = 0
+            self.bug = None
 
-        """ Potmeter logic """
+    def _update_temp_normal(self):
+        self.outputs['temp_led'] = 1 if self.get_input('temp') > 30 else 0
+
+    def _update_pot_normal(self):
         pot_val = self.get_input('pot')
         if pot_val < 64:
             self.outputs['pot_led'] = 1000
@@ -61,10 +64,54 @@ class DUT:
         else:
             self.outputs['pot_led'] = 1111
 
-        """ Switch Logic """
+    def _update_switch_normal(self):
         self.outputs['switch_led'] = self.get_input('switch')
-        # if self.is_bug_active:
-        #
-        #     self.outputs['switch_led'] = not bool(switch_val)
-        # else:
-        #     self.outputs['switch_led'] = bool(switch_val)
+
+    def update_firmware(self):
+
+        if self.bug is None:
+            self._update_temp_normal()
+            self._update_pot_normal()
+            self._update_switch_normal()
+            return
+
+        match self.bug:
+            case 1:
+                self.outputs['switch_led'] = 0
+
+                self._update_temp_normal()
+                self._update_pot_normal()
+
+            case 2:
+                pot_val = self.get_input('pot')
+                if pot_val < 74:
+                    self.outputs['pot_led'] = 1000
+                elif pot_val < 128:
+                    self.outputs['pot_led'] = 1100
+                elif pot_val < 192:
+                    self.outputs['pot_led'] = 1110
+                else:
+                    self.outputs['pot_led'] = 1111
+
+                self._update_temp_normal()
+                self._update_switch_normal()
+
+            case 3:
+                pot_val = self.get_input('pot')
+                if pot_val < 64:
+                    self.outputs['pot_led'] = 1000
+                elif pot_val < 128:
+                    self.outputs['pot_led'] = 1100
+                elif pot_val < 192:
+                    self.outputs['pot_led'] = 1110
+                else:
+                    self.outputs['pot_led'] = 1110
+
+                self._update_temp_normal()
+                self._update_switch_normal()
+
+            case 4:
+                self.outputs['temp_led'] = 1 if self.get_input('temp') > 35 else 0
+
+                self._update_pot_normal()
+                self._update_switch_normal()

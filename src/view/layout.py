@@ -68,7 +68,7 @@ class MainLayout:
             with ui.row().classes('w-full justify-between items-center mb-4'):
                 ui.label('Bug Injection Active').classes('text-gray-700 font-medium text-red-600')
 
-                current_state = self.controller.model.is_bug_active
+                current_state = self.controller.model.bug is not None
                 ui.switch(value=current_state,
                           on_change=lambda e: self.controller.on_bug_toggle(e.value)) \
                     .props('color=red')

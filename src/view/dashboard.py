@@ -1,3 +1,5 @@
+from typing import Optional
+
 from nicegui import ui
 
 
@@ -64,7 +66,7 @@ class DashboardPanel:
                 ).classes('scale-150 origin-left')
                 self.switch_led = ui.icon('power_settings_new', size='lg', color='grey').classes('ml-4')
 
-    def update_view(self, feedback_colors: dict, bug_active: bool):
+    def update_view(self, feedback_colors: dict, bug: Optional[int]):
 
 
         # Temp update
@@ -76,6 +78,11 @@ class DashboardPanel:
 
         # Switch LED update
         self.switch_led.props(f'color={feedback_colors["switch"]}')
+
+        if bug is None:
+            bug_active = False
+        else:
+            bug_active = True
 
         self.bug_indicator.set_visibility(bug_active)
 
