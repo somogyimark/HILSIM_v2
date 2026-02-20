@@ -24,6 +24,9 @@ def main():
         layout = MainLayout(controller)
         controller.register_layout(layout)
 
+    app.native.window_args['frameless'] = True
+    app.native.window_args['easy_drag'] = False
+
     ui.run(
         title='HIL SIM',
         dark=True,

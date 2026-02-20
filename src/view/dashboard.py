@@ -2,6 +2,8 @@ from typing import Optional
 
 from nicegui import ui
 
+from src.view.custom_knob import CustomKnob
+
 
 class DashboardPanel:
     def __init__(self, callbacks):
@@ -17,8 +19,6 @@ class DashboardPanel:
 
                 self.bug_indicator = ui.label('⚠️ BUG INJECTION ACTIVE ⚠️') \
                     .classes('text-red-500 font-bold text-lg border-2 border-red-500 p-2 rounded animate-pulse hidden')
-                # self.btn_bug = ui.button('BUG SIMULATION', color='red',
-                #                          on_click=lambda: self.callbacks['toggle_bug']())
 
             # ---------------------------------------------------------
             # 1. Temperature Section
@@ -27,9 +27,15 @@ class DashboardPanel:
 
             with ui.row().classes('w-full items-center justify-between gap-8'):
 
-                self.temp_knob = ui.knob(value=25, min=0, max=100, step=1, show_value=True,
-                        color='red', track_color='grey-800', size='70px',
-                        on_change=lambda e: self.callbacks['temp'](e.value))
+                self.temp_knob = CustomKnob(
+                    value=25,
+                    min=0,
+                    max=100,
+                    size=80,
+                    color='red',
+                    label='',
+                    on_change=lambda val: self.callbacks['temp'](val)
+                )
 
                 with ui.column().classes('items-center'):
                     self.temp_icon = ui.icon('thermostat', size='lg', color='grey')
