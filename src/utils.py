@@ -1,7 +1,7 @@
 import os
 import sys
 import ctypes
-from src.image_base64 import image_to_base64
+from image_base64 import image_to_base64
 
 def ensure_directories():
 

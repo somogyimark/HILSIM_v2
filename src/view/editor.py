@@ -47,7 +47,7 @@ class EditorPanel:
 
             ui.separator().classes('my-2')
 
-            with ui.row().classes('w-full h-full column wrap'):
+            with ui.row().classes('w-full items-center gap-4'):
                 ui.label('Console Output:').classes('text-sm font-bold text-gray-400')
                 ui.button('Clear Log', on_click=lambda: self.log_output.clear(), color='grey').classes('mr-2')
 

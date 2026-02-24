@@ -1,5 +1,5 @@
-from src.model.dut import DUT
-from src.model.logger import HtmlLogger
+from model.dut import DUT
+from model.logger import HtmlLogger
 from datetime import datetime
 
 

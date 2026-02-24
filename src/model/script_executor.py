@@ -1,5 +1,5 @@
 import asyncio
-from src.model.hil_system import HILSystem
+from model.hil_system import HILSystem
 
 
 class ScriptExecutor:

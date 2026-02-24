@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from src.utils import HTML_STYLE
+from utils import HTML_STYLE
 import socket
 
 def get_hostname() -> str:

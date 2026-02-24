@@ -1,6 +1,6 @@
 from nicegui import ui, app
-from src.view.dashboard import DashboardPanel
-from src.view.editor import EditorPanel
+from view.dashboard import DashboardPanel
+from view.editor import EditorPanel
 
 
 class MainLayout:
@@ -31,6 +31,8 @@ class MainLayout:
     def build_ui(self):
         self.dark_mode_ctrl = ui.dark_mode(True)
 
+        ui.query('body').classes('bg-[#0b1426] text-white overflow-hidden')
+
         with ui.header().classes('w-full flex justify-between items-center bg-[#0b1426] border-b border-[#2a3441] p-0'):
 
             with ui.row().classes('grow h-full items-center gap-3 px-4 py-2 pywebview-drag-region'):
@@ -57,11 +59,8 @@ class MainLayout:
                     .classes('hover:bg-red-600 hover:text-white transition-colors')
 
         with ui.row().classes('w-full h-screen no-wrap'):
-            with ui.column().classes('w-1/2 p-4 bg-gray-900'):
-                self.dashboard = DashboardPanel(self.dash_callbacks)
-
-            with ui.column().classes('w-1/2 p-4 bg-gray-800'):
-                self.editor = EditorPanel(self.editor_callbacks)
+            self.dashboard = DashboardPanel(self.dash_callbacks)
+            self.editor = EditorPanel(self.editor_callbacks)
 
     def open_settings_dialog(self):
         with ui.dialog() as dialog, ui.card().classes('w-96 bg-gray-100 p-6'):

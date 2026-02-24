@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
 from nicegui import ui, app
-from src.model.hil_system import HILSystem
-from src.model.script_executor import ScriptExecutor
-from src.view.layout import MainLayout
+from model.hil_system import HILSystem
+from model.script_executor import ScriptExecutor
+from view.layout import MainLayout
 
 
 class MainController:
