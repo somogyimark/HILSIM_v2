@@ -29,7 +29,7 @@ def main():
 
     ui.run(
         title='HIL SIM',
-        dark=True,
+        dark=False,
         native=True,
         window_size=(1200, 800),
         reload=False,

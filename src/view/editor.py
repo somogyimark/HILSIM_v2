@@ -12,8 +12,8 @@ class EditorPanel:
         self.callbacks = callbacks
         self.current_file_path = None
 
-        with ui.card().classes('w-full h-full column no-wrap'):
-            self.current_file_name = ui.label().classes('text-xl font-bold text-gray-200 placeholder')
+        with ui.card().classes('w-full h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700 p-6'):
+            self.current_file_name = ui.label().classes('text-lg font-semibold text-slate-800 dark:text-slate-100 tracking-tight min-h-[28px] placeholder')
 
             default_code = (
                 "batchControl -init\n"
@@ -26,33 +26,44 @@ class EditorPanel:
 
             self.last_saved_content = default_code
 
-            self.editor = ui.codemirror(value=default_code, language='Python', theme='vscodeDark') \
-                .classes('w-full h-64 border border-gray-700 rounded')
+            self.editor = ui.codemirror(value=default_code, theme='github-light') \
+                .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
 
 
-            with ui.row().classes('w-full justify-between mt-2'):
+            with ui.row().classes('w-full justify-between mt-4'):
 
-                with ui.row():
-                    ui.button('LOAD', on_click=self.callbacks['load'], color='blue')
+                with ui.row().classes('gap-2'):
+                    ui.button('LOAD', on_click=self.callbacks['load']) \
+                        .props('outline color=primary') \
+                        .classes('font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 transition-colors')
 
                     ui.button('SAVE',
-                              on_click=lambda: self.callbacks['save'](self.editor.value, self.current_file_path),
-                              color='blue')
+                              on_click=lambda: self.callbacks['save'](self.editor.value, self.current_file_path)) \
+                        .props('outline color=primary') \
+                        .classes('font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 transition-colors')
 
-                    ui.button('LOGS', on_click=self.callbacks['logs'], color='grey')
+                    ui.button('LOGS', on_click=self.callbacks['logs']) \
+                        .props('flat text-color=grey-7') \
+                        .classes('font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-slate-300 transition-colors')
 
                 with ui.row():
 
-                    ui.button('RUN SCRIPT', on_click=self.handle_run, color='green')
+                    ui.button('RUN SCRIPT', on_click=self.handle_run) \
+                        .props('color=primary') \
+                        .classes('font-bold rounded-lg px-6 shadow-md shadow-[#08a4e5]/20 hover:bg-[#0793ce] transition-colors')
 
-            ui.separator().classes('my-2')
+            ui.separator().classes('my-4')
 
-            with ui.row().classes('w-full items-center gap-4'):
-                ui.label('Console Output:').classes('text-sm font-bold text-gray-400')
-                ui.button('Clear Log', on_click=lambda: self.log_output.clear(), color='grey').classes('mr-2')
+            with ui.row().classes('w-full items-center justify-between pb-2'):
+                ui.label('CONSOLE OUTPUT').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider')
+                ui.button('Clear Log', on_click=lambda: self.log_output.clear()) \
+                    .props('flat outline text-color=grey-6 size=sm') \
+                    .classes('font-medium hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg transition-colors')
 
 
-            self.log_output = ui.log().classes('w-full h-48 bg-gray-900 text-green-400 p-2 rounded font-mono text-xs')
+
+            self.log_output = ui.log().classes('w-full h-48 bg-gray-50 dark:bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl shadow-inner font-mono text-xs overflow-hidden border border-slate-800 dark:border-slate-700')
+
 
     async def handle_run(self):
         await self.callbacks['run'](self.editor.value, self.current_file_path)
@@ -76,17 +87,20 @@ class EditorPanel:
         self.last_saved_content = text
 
     async def open_save_dialog(self) -> bool:
-        with ui.dialog() as dialog, ui.card().classes('w-96 bg-gray-100 p-6'):
-            ui.label('Do you want to save?').classes('text-xl font-bold mb-4 text-gray-800')
+        with ui.dialog() as dialog, ui.card().classes('w-96 bg-white p-6 rounded-2xl shadow-2xl border border-slate-100'):
+            ui.label('Do you want to save?').classes('text-xl font-bold mb-4 text-slate-800 tracking-tight')
 
-            with ui.row().classes('w-full h-full column wrap'):
-                with ui.column():
-                    ui.button('YES', on_click= lambda: dialog.submit(True), color='blue')
-                with ui.column():
-                    ui.button('NO',on_click= lambda: dialog.submit(False), color='red')
+            with ui.row().classes('w-full justify-end gap-3 mt-6'):
+                ui.button('NO', on_click=lambda: dialog.submit(False)) \
+                    .props('flat text-color=grey-7 outline') \
+                    .classes('font-medium hover:bg-red-50 hover:text-red-600 rounded-lg')
+                ui.button('YES', on_click=lambda: dialog.submit(True)) \
+                    .props('color=primary') \
+                    .classes('font-bold shadow-sm shadow-[#08a4e5]/20 rounded-lg')
 
-            with ui.row().classes('w-full justify-end mt-6'):
-                ui.button('Close', on_click=dialog.close, color='primary')
+            with ui.row().classes('hidden'):
+                # We do not strictly need the extra Close button if they choose Yes/No, keeping original logic.
+                ui.button('Close', on_click=dialog.close)
 
         result = await dialog
         return result
