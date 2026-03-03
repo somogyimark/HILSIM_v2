@@ -2,6 +2,7 @@ from turtle import color
 
 from nicegui import ui
 import os
+from view.custom_editor import CustomEditor
 
 
 class EditorPanel:
@@ -26,8 +27,11 @@ class EditorPanel:
 
             self.last_saved_content = default_code
 
-            self.editor = ui.codemirror(value=default_code, theme='github-light') \
-                .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
+            # self.editor = ui.codemirror(value=default_code, theme='github-light') \
+            #     .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
+
+            self.editor = CustomEditor(value=default_code) \
+                .classes('w-full h-64 border border-[#2a3441] rounded overflow-hidden')
 
 
             with ui.row().classes('w-full justify-between mt-4'):

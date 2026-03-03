@@ -1,5 +1,6 @@
 import os
 from nicegui import ui, app
+import rocher
 from model.dut import DUT
 from model.hil_system import HILSystem
 from controller.main_controller import MainController
@@ -18,6 +19,7 @@ def main():
     assets_folder = resource_path('assets')
     icon_path = resource_path(os.path.join('assets', 'logo.ico'))
     app.add_static_files('/assets', assets_folder)
+    app.add_static_files('/monaco-vs', rocher.path())
 
     @ui.page('/')
     def index():
