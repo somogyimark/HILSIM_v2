@@ -2,7 +2,7 @@ from nicegui.element import Element
 
 
 class CustomKnob(Element, component='custom_knob.js'):
-    def __init__(self, value: int, min: int, max: int, on_change, size: int = 100, color: str = 'blue',
+    def __init__(self, value: int, min: int, max: int, on_change, size, color,
                  label: str = None):
         super().__init__()
         self._props['value'] = value

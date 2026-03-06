@@ -22,7 +22,7 @@ export default {
         </div>
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span class="text-xl font-bold font-mono drop-shadow-md" :class="activeColorClass">
+          <span class="text-2xl font-bold font-mono drop-shadow-md" :class="activeColorClass">
             {{ Math.round(value) }}
           </span>
         </div>
@@ -55,8 +55,8 @@ export default {
     arcLength() { return 0.75 * this.circumference; },
     bgDashArray() { return `${this.arcLength} ${this.circumference - this.arcLength}`; },
     activeDashOffset() { return this.circumference - (this.percentage * this.arcLength); },
-    activeColorClass() { return this.color === 'red' ? 'text-red-500' : 'text-blue-500'; },
-    strokeColor() { return this.color === 'red' ? '#ef4444' : '#3b82f6'; }
+    activeColorClass() { return this.color === 'red' ? 'text-[#ef4444]' : 'text-[#08a4e5]'; },
+    strokeColor() { return this.color === 'red' ? '#ef4444' : '#08a4e5'; }
   },
   methods: {
     calculateValueFromEvent(clientX, clientY) {
