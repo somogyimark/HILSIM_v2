@@ -13,7 +13,7 @@ class DashboardPanel:
         self.callbacks = callbacks
         self.pot_leds = []
 
-        with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700 p-6'):
+        with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6'):
             with ui.row().classes('w-full justify-between items-center mb-4'):
                 ui.label('HIL Dashboard').classes('text-2xl font-bold dark:text-gray-300 dark:text-slate-100 tracking-tight')
 
@@ -25,7 +25,7 @@ class DashboardPanel:
             # ---------------------------------------------------------
             ui.label('TEMPERATURE SENSOR').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
-            with ui.row().classes('w-full items-center justify-between gap-8'):
+            with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 
                 self.temp_knob = CustomKnob(
                     value=25,
@@ -47,7 +47,7 @@ class DashboardPanel:
             # ---------------------------------------------------------
             ui.label('POTENTIOMETER (RPM)').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
-            with ui.row().classes('w-full items-center justify-between gap-8'):
+            with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 
                 self.pot_knob = CustomKnob(
                     value=0,
@@ -71,10 +71,10 @@ class DashboardPanel:
             # ---------------------------------------------------------
             ui.label('MAIN SWITCH').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
-            with ui.row().classes('w-full items-center mt-2 justify-between'):
+            with ui.row().classes('w-full h-1/3 items-center mt-2 justify-between'):
                 self.switch = ui.switch(
                     on_change=lambda e: self.callbacks['switch'](e.value)
-                ).classes('scale-150 origin-left transition-all duration-300').props('color=#08a4e5')
+                ).classes('scale-200 origin-left transition-all duration-300').props('color=#08a4e5')
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
                     self.switch_led = ui.icon('circle', size='60px', color='slate-300').classes('transition-colors')
 

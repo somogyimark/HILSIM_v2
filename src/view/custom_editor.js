@@ -2,6 +2,7 @@ export default {
     template: `<div ref="editorContainer" class="w-full h-full text-left"></div>`,
     props: {
         value: String,
+        dark_mode: Boolean,
     },
     mounted() {
         // Ha már betöltött, csak inicializálunk
@@ -74,13 +75,28 @@ export default {
                         'editor.background': '#0b1426', // A dashboardod sötétkék háttere!
                     }
                 });
+
+                monaco.editor.defineTheme('hilsim-light', {
+                    base: 'vs',
+                    inherit: true,
+                    rules: [
+                        { token: 'keyword', foreground: '0000ff', fontStyle: 'bold' },
+                        { token: 'type', foreground: 'af00db' },
+                        { token: 'variable', foreground: '0070c1' },
+                        { token: 'comment', foreground: '008000', fontStyle: 'italic' },
+                        { token: 'string', foreground: 'a31515' }
+                    ],
+                    colors: {
+                        'editor.background': '#f9fafb',
+                    }
+                });
             }
 
             // Editor létrehozása
             this.editor = monaco.editor.create(this.$refs.editorContainer, {
                 value: this.value,
                 language: 'hilsim',
-                theme: 'hilsim-dark',
+                theme: this.dark_mode ? 'hilsim-dark' : 'hilsim-light',
                 automaticLayout: true,
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
@@ -98,6 +114,11 @@ export default {
         value(newValue) {
             if (this.editor && newValue !== this.editor.getValue()) {
                 this.editor.setValue(newValue);
+            }
+        },
+        dark_mode(newValue) {
+            if (window.monaco) {
+                monaco.editor.setTheme(newValue ? 'hilsim-dark' : 'hilsim-light');
             }
         }
     },

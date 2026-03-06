@@ -13,7 +13,7 @@ class EditorPanel:
         self.callbacks = callbacks
         self.current_file_path = None
 
-        with ui.card().classes('flex-1 w-1/2 h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700'):
+        with ui.card().classes('flex-1 w-1/2 h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700'):
             self.current_file_name = ui.label().classes('text-lg font-semibold text-slate-800 dark:text-slate-100 tracking-tight min-h-[18px] placeholder')
 
             default_code = (
@@ -31,7 +31,7 @@ class EditorPanel:
             #     .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
 
             self.editor = CustomEditor(value=default_code) \
-                .classes('w-full h-48 border border-[#2a3441] rounded overflow-hidden')
+                .classes('w-full h-48 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden')
 
 
             with ui.row().classes('w-full justify-between mt-4'):
@@ -66,7 +66,7 @@ class EditorPanel:
 
 
 
-            self.log_output = ui.log().classes('w-full h-48 bg-gray-50 dark:bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl shadow-inner font-mono text-xs overflow-hidden border border-slate-800 dark:border-slate-700')
+            self.log_output = ui.log().classes('w-full h-48 bg-gray-50 dark:bg-[#0f172a] text-[#38bdf8] p-4 rounded-xl shadow-inner font-mono text-xs overflow-hidden border border-slate-200 dark:border-slate-700')
 
 
     async def handle_run(self):

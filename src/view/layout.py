@@ -62,6 +62,10 @@ class MainLayout:
         with ui.row().classes('w-full h-[calc(100vh-82px)] no-wrap gap-6'):
             self.dashboard = DashboardPanel(self.dash_callbacks)
             self.editor = EditorPanel(self.editor_callbacks)
+            
+            # Sync editor's theme to the current dark mode and update on toggle
+            self.editor.editor.dark_mode = self.dark_mode_ctrl.value
+            self.dark_mode_ctrl.on_value_change(lambda e: setattr(self.editor.editor, 'dark_mode', e.value))
 
     def open_settings_dialog(self):
         with ui.dialog() as dialog, ui.card().classes('w-96 bg-white dark:!bg-slate-900 p-6 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700'):
