@@ -16,6 +16,13 @@ class MainController:
         self.view_dashboard = None
         self.view_editor = None
 
+        self.colors = {
+            # Itt most már tuple-öket használunk: ('quasar-szín-neve', 'css-glow-szöveg')
+            'green': ('green-5', '0 0 10px rgba(74, 222, 128, 0.8), 0 0 20px rgba(74, 222, 128, 0.6)'),
+            'red': ('red-5', '0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.6)'),
+            'grey': ('slate-300', 'none')  # A kikapcsolt (szürke) állapotnak nincs ragyogása
+        }
+
     def register_layout(self, layout: MainLayout):
         self.view_layout = layout
         self.view_dashboard = layout.dashboard
@@ -197,20 +204,20 @@ class MainController:
         self.model.update_firmware()
 
 
-        colors = {
-            'temp': 'red' if self.model.outputs['temp_led'] else 'grey',
-            'switch': 'green' if self.model.outputs['switch_led'] else 'grey',
+        feedback_colors = {
+            'temp': self.colors['red'] if self.model.outputs['temp_led'] else self.colors['grey'],
+            'switch': self.colors['green'] if self.model.outputs['switch_led'] else self.colors['grey'],
             'pot_leds': []
         }
 
         potleds = [int(c) for c in str(self.model.outputs['pot_led'])]
         for led in potleds:
-            colors['pot_leds'].append('green' if led == 1 else 'grey')
+            feedback_colors['pot_leds'].append(self.colors['green'] if led == 1 else self.colors['grey'])
 
 
 
         if self.view_dashboard:
-            self.view_dashboard.update_view(colors, self.model.bug)
+            self.view_dashboard.update_view(feedback_colors, self.model.bug)
 
     def set_execution_delay(self, value):
         delay = float(value)

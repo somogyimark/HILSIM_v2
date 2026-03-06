@@ -56,7 +56,6 @@ class DashboardPanel:
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
                     for _ in range(4):
-
                         self.pot_leds.append(ui.icon('circle', size='lg', color='slate-300'))
 
             ui.separator().classes('my-4 dark:bg-slate-700')
@@ -76,14 +75,17 @@ class DashboardPanel:
 
 
         # Temp update
-        self.temp_icon.props(f'color={feedback_colors["temp"]}')
+        self.temp_icon.props(f'color={feedback_colors["temp"][0]}')
+        self.temp_icon.style(f'text-shadow: {feedback_colors["temp"][1]}')
 
         # Pot LEDs update
         for i, led_icon in enumerate(self.pot_leds):
-            led_icon.props(f'color={feedback_colors["pot_leds"][i]}')
+            led_icon.props(f'color={feedback_colors["pot_leds"][i][0]}')
+            led_icon.style(f'text-shadow: {feedback_colors["pot_leds"][i][1]}')
 
         # Switch LED update
-        self.switch_led.props(f'color={feedback_colors["switch"]}')
+        self.switch_led.props(f'color={feedback_colors["switch"][0]}')
+        self.switch_led.style(f'text-shadow: {feedback_colors["switch"][1]}')
 
         if bug is None:
             bug_active = False
