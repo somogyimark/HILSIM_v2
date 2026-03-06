@@ -63,9 +63,15 @@ class MainLayout:
             self.dashboard = DashboardPanel(self.dash_callbacks)
             self.editor = EditorPanel(self.editor_callbacks)
             
-            # Sync editor's theme to the current dark mode and update on toggle
-            self.editor.editor.dark_mode = self.dark_mode_ctrl.value
-            self.dark_mode_ctrl.on_value_change(lambda e: setattr(self.editor.editor, 'dark_mode', e.value))
+            # Sync components' themes to current dark mode and update on toggle
+            def sync_dark_mode(e):
+                val = e.value
+                self.editor.editor.dark_mode = val
+                self.dashboard.temp_knob.dark_mode = val
+                self.dashboard.pot_knob.dark_mode = val
+
+            sync_dark_mode(type('obj', (object,), {'value': self.dark_mode_ctrl.value}))
+            self.dark_mode_ctrl.on_value_change(sync_dark_mode)
 
     def open_settings_dialog(self):
         with ui.dialog() as dialog, ui.card().classes('w-96 bg-white dark:!bg-slate-900 p-6 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700'):

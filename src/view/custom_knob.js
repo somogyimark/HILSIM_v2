@@ -6,7 +6,7 @@ export default {
            @mousedown="handleMouseDown">
         
         <svg :width="size" :height="size" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" stroke-width="10"
+          <circle cx="50" cy="50" r="40" fill="none" :stroke="bgStrokeColor" stroke-width="10"
                   stroke-linecap="round" :stroke-dasharray="bgDashArray"
                   stroke-dashoffset="0" transform="rotate(135 50 50)" />
           
@@ -39,7 +39,8 @@ export default {
     max: { type: Number, default: 100 },
     size: { type: Number, default: 100 },
     color: { type: String, default: 'blue' },
-    label: { type: String, default: null }
+    label: { type: String, default: null },
+    dark_mode: { type: Boolean, default: true }
   },
   data() {
     return {
@@ -56,7 +57,8 @@ export default {
     bgDashArray() { return `${this.arcLength} ${this.circumference - this.arcLength}`; },
     activeDashOffset() { return this.circumference - (this.percentage * this.arcLength); },
     activeColorClass() { return this.color === 'red' ? 'text-[#ef4444]' : 'text-[#08a4e5]'; },
-    strokeColor() { return this.color === 'red' ? '#ef4444' : '#08a4e5'; }
+    strokeColor() { return this.color === 'red' ? '#ef4444' : '#08a4e5'; },
+    bgStrokeColor() { return this.dark_mode ? '#616f86ff' : '#cbd5e1'; }
   },
   methods: {
     calculateValueFromEvent(clientX, clientY) {
