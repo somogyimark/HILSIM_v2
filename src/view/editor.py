@@ -13,8 +13,8 @@ class EditorPanel:
         self.callbacks = callbacks
         self.current_file_path = None
 
-        with ui.card().classes('flex-1 w-1/2 h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700 p-6'):
-            self.current_file_name = ui.label().classes('text-lg font-semibold text-slate-800 dark:text-slate-100 tracking-tight min-h-[28px] placeholder')
+        with ui.card().classes('flex-1 w-1/2 h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 dark:border-slate-700'):
+            self.current_file_name = ui.label().classes('text-lg font-semibold text-slate-800 dark:text-slate-100 tracking-tight min-h-[18px] placeholder')
 
             default_code = (
                 "batchControl -init\n"
@@ -31,7 +31,7 @@ class EditorPanel:
             #     .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
 
             self.editor = CustomEditor(value=default_code) \
-                .classes('w-full h-64 border border-[#2a3441] rounded overflow-hidden')
+                .classes('w-full h-48 border border-[#2a3441] rounded overflow-hidden')
 
 
             with ui.row().classes('w-full justify-between mt-4'):

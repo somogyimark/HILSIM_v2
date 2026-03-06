@@ -59,7 +59,7 @@ class MainLayout:
                     .props('flat round dense') \
                     .classes('text-slate-500 hover:!bg-red-50 dark:hover:!bg-red-500 hover:!text-red-500 dark:hover:!text-red-300 transition-colors')
 
-        with ui.row().classes('w-full h-[calc(100vh-50px)] no-wrap p-6 gap-6'):
+        with ui.row().classes('w-full h-[calc(100vh-82px)] no-wrap gap-6'):
             self.dashboard = DashboardPanel(self.dash_callbacks)
             self.editor = EditorPanel(self.editor_callbacks)
 
