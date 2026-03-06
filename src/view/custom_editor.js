@@ -99,6 +99,7 @@ export default {
                 theme: this.dark_mode ? 'hilsim-dark' : 'hilsim-light',
                 automaticLayout: true,
                 minimap: { enabled: false },
+                overviewRulerLanes: 0,
                 scrollBeyondLastLine: false,
                 fontSize: 14
             });
