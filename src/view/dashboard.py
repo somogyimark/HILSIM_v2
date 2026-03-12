@@ -18,12 +18,12 @@ class DashboardPanel:
                 ui.label('HIL Dashboard').classes('text-2xl font-bold dark:text-gray-300 dark:text-slate-100 tracking-tight')
 
                 self.bug_indicator = ui.label('⚠️ BUG INJECTION ACTIVE ⚠️') \
-                    .classes('text-red-500 font-bold text-lg border-2 border-red-500 p-2 rounded animate-pulse hidden')
+                    .classes('text-red-500 font-bold text-[2vh] border-2 border-red-500 p-2 rounded animate-pulse hidden')
 
             # ---------------------------------------------------------
             # 1. Temperature Section
             # ---------------------------------------------------------
-            ui.label('TEMPERATURE SENSOR').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
+            ui.label('TEMPERATURE SENSOR').classes('text-[2vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
             with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 
@@ -38,14 +38,14 @@ class DashboardPanel:
                 )
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
-                    self.temp_icon = ui.icon('circle', size='60px', color='slate-300').classes('transition-colors')
+                    self.temp_icon = ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]')
 
             ui.separator().classes('my-4 dark:bg-slate-700')
 
             # ---------------------------------------------------------
             # 2. Potentiometer Section
             # ---------------------------------------------------------
-            ui.label('POTENTIOMETER (RPM)').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
+            ui.label('POTENTIOMETER').classes('text-[2vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
             with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 
@@ -62,37 +62,43 @@ class DashboardPanel:
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
                     for _ in range(4):
-                        self.pot_leds.append(ui.icon('circle', size='60px', color='slate-300').classes('transition-colors'))
+                        self.pot_leds.append(ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]'))
 
             ui.separator().classes('my-4 dark:bg-slate-700')
 
             # ---------------------------------------------------------
             # 3. Switch Section
             # ---------------------------------------------------------
-            ui.label('MAIN SWITCH').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
+            ui.label('MAIN SWITCH').classes('text-[2vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
 
             with ui.row().classes('w-full h-1/3 items-center mt-2 justify-between'):
                 self.switch = ui.switch(
                     on_change=lambda e: self.callbacks['switch'](e.value)
                 ).classes('scale-200 origin-left transition-all duration-300').props('color=#08a4e5')
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
-                    self.switch_led = ui.icon('circle', size='60px', color='slate-300').classes('transition-colors')
+                    self.switch_led = ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]')
 
     def update_view(self, feedback_colors: dict, bug: Optional[int]):
 
+        def apply_color(icon, color_info):
+            color, shadow = color_info
+            if color == 'slate-300':
+                icon.props(remove='color')
+                icon.classes(add='text-slate-300 dark:text-[#717984]')
+            else:
+                icon.classes(remove='text-slate-300 dark:text-[#717984]')
+                icon.props(f'color={color}')
+            icon.style(f'text-shadow: {shadow}')
 
         # Temp update
-        self.temp_icon.props(f'color={feedback_colors["temp"][0]}')
-        self.temp_icon.style(f'text-shadow: {feedback_colors["temp"][1]}')
+        apply_color(self.temp_icon, feedback_colors["temp"])
 
         # Pot LEDs update
         for i, led_icon in enumerate(self.pot_leds):
-            led_icon.props(f'color={feedback_colors["pot_leds"][i][0]}')
-            led_icon.style(f'text-shadow: {feedback_colors["pot_leds"][i][1]}')
+            apply_color(led_icon, feedback_colors["pot_leds"][i])
 
         # Switch LED update
-        self.switch_led.props(f'color={feedback_colors["switch"][0]}')
-        self.switch_led.style(f'text-shadow: {feedback_colors["switch"][1]}')
+        apply_color(self.switch_led, feedback_colors["switch"])
 
         if bug is None:
             bug_active = False
