@@ -14,8 +14,8 @@ class DashboardPanel:
         self.pot_leds = []
 
         with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6'):
-            with ui.row().classes('w-full justify-between items-center mb-4'):
-                ui.label('HIL Dashboard').classes('text-2xl font-bold dark:text-gray-300 dark:text-slate-100 tracking-tight')
+            with ui.row().classes('w-full justify-between items-right mb-4'):
+                # ui.label('HIL Dashboard').classes('text-2xl font-bold dark:text-gray-300 dark:text-slate-100 tracking-tight')
 
                 self.bug_indicator = ui.label('⚠️ BUG INJECTION ACTIVE ⚠️') \
                     .classes('text-red-500 font-bold text-[2vh] border-2 border-red-500 p-2 rounded animate-pulse hidden')
@@ -31,14 +31,14 @@ class DashboardPanel:
                     value=25,
                     min=0,
                     max=100,
-                    size=90,
+                    size='15vh',
                     color='red',
                     label='',
                     on_change=lambda val: self.callbacks['temp'](val)
                 )
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
-                    self.temp_icon = ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]')
+                    self.temp_icon = ui.icon('circle', size='7vh').classes('transition-colors text-slate-300 dark:text-[#717984]')
 
             ui.separator().classes('my-4 dark:bg-slate-700')
 
@@ -53,7 +53,7 @@ class DashboardPanel:
                     value=0,
                     min=0,
                     max=255,
-                    size=90,
+                    size='15vh',
                     color='blue',
                     label='',
                     on_change=lambda val: self.callbacks['pot'](val)
@@ -62,7 +62,7 @@ class DashboardPanel:
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
                     for _ in range(4):
-                        self.pot_leds.append(ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]'))
+                        self.pot_leds.append(ui.icon('circle', size='7vh').classes('transition-colors text-slate-300 dark:text-[#717984]'))
 
             ui.separator().classes('my-4 dark:bg-slate-700')
 
@@ -74,9 +74,9 @@ class DashboardPanel:
             with ui.row().classes('w-full h-1/3 items-center mt-2 justify-between'):
                 self.switch = ui.switch(
                     on_change=lambda e: self.callbacks['switch'](e.value)
-                ).classes('scale-200 origin-left transition-all duration-300').props('color=#08a4e5')
+                ).classes('origin-left transition-all duration-300').props('color=#08a4e5 size=10vh')
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
-                    self.switch_led = ui.icon('circle', size='60px').classes('transition-colors text-slate-300 dark:text-[#717984]')
+                    self.switch_led = ui.icon('circle', size='7vh').classes('transition-colors text-slate-300 dark:text-[#717984]')
 
     def update_view(self, feedback_colors: dict, bug: Optional[int]):
 

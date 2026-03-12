@@ -2,10 +2,10 @@ export default {
   template: `
     <div class="flex flex-col items-center gap-2 select-none">
       <div ref="knobRef" class="relative cursor-pointer group"
-           :style="{ width: size + 'px', height: size + 'px' }"
+           :style="{ width: sizeStr, height: sizeStr }"
            @mousedown="handleMouseDown">
         
-        <svg :width="size" :height="size" viewBox="0 0 100 100">
+        <svg :width="sizeStr" :height="sizeStr" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="40" fill="none" :stroke="bgStrokeColor" stroke-width="10"
                   stroke-linecap="round" :stroke-dasharray="bgDashArray"
                   stroke-dashoffset="0" transform="rotate(135 50 50)" />
@@ -22,7 +22,7 @@ export default {
         </div>
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <span class="text-2xl font-bold font-mono drop-shadow-md" :class="activeColorClass">
+          <span class="font-bold font-mono drop-shadow-md" :class="activeColorClass" :style="{ fontSize: 'calc(0.23 * ' + sizeStr + ')' }">
             {{ Math.round(value) }}
           </span>
         </div>
@@ -37,7 +37,7 @@ export default {
     value: { type: Number, required: true },
     min: { type: Number, default: 0 },
     max: { type: Number, default: 100 },
-    size: { type: Number, default: 100 },
+    size: { type: [Number, String], default: 100 },
     color: { type: String, default: 'blue' },
     label: { type: String, default: null },
     dark_mode: { type: Boolean, default: true }
@@ -49,6 +49,7 @@ export default {
     }
   },
   computed: {
+    sizeStr() { return typeof this.size === 'number' ? this.size + 'px' : this.size; },
     range() { return this.max - this.min; },
     percentage() { return Math.min(Math.max((this.value - this.min) / this.range, 0), 1); },
     rotation() { return -135 + (this.percentage * 270); },
