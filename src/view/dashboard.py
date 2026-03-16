@@ -14,16 +14,14 @@ class DashboardPanel:
         self.pot_leds = []
 
         with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6'):
-            with ui.row().classes('w-full justify-between items-right mb-4'):
-                # ui.label('HIL Dashboard').classes('text-2xl font-bold dark:text-gray-300 dark:text-slate-100 tracking-tight')
-
-                self.bug_indicator = ui.label('⚠️ BUG INJECTION ACTIVE ⚠️') \
-                    .classes('text-red-500 font-bold text-[2vh] border-2 border-red-500 p-2 rounded animate-pulse hidden')
 
             # ---------------------------------------------------------
             # 1. Temperature Section
             # ---------------------------------------------------------
-            ui.label('TEMPERATURE SENSOR').classes('text-[2vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
+            with ui.row().classes('w-full justify-between items-right mb-4'):
+                ui.label('TEMPERATURE SENSOR').classes('text-[2vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2')
+                self.bug_indicator = ui.label('⚠️ BUG INJECTION ACTIVE ⚠️') \
+                        .classes('text-red-500 font-bold text-[2vh] border-2 border-red-500 rounded animate-pulse hidden')
 
             with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 

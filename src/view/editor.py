@@ -38,30 +38,30 @@ class EditorPanel:
 
                 with ui.row().classes('gap-2'):
                     ui.button('LOAD', on_click=self.callbacks['load']) \
-                        .props('outline color=primary') \
+                        .props('outline color=primary size=2vh') \
                         .classes('font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 transition-colors')
 
                     ui.button('SAVE',
                               on_click=lambda: self.callbacks['save'](self.editor.value, self.current_file_path)) \
-                        .props('outline color=primary') \
+                        .props('outline color=primary size=2vh') \
                         .classes('font-semibold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 dark:text-slate-200 transition-colors')
 
                     ui.button('LOGS', on_click=self.callbacks['logs']) \
-                        .props('flat text-color=grey-7') \
+                        .props('flat text-color=grey-7 size=2vh') \
                         .classes('font-semibold rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 dark:text-slate-300 transition-colors')
 
                 with ui.row():
 
                     ui.button('RUN SCRIPT', on_click=self.handle_run) \
-                        .props('color=primary') \
+                        .props('color=primary size=2vh') \
                         .classes('font-bold rounded-lg px-6 shadow-md shadow-[#08a4e5]/20 hover:bg-[#0793ce] transition-colors')
 
             ui.separator().classes('my-4')
 
             with ui.row().classes('w-full items-center justify-between pb-2'):
-                ui.label('CONSOLE OUTPUT').classes('text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider')
+                ui.label('CONSOLE OUTPUT').classes('text-[1.5vh] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider')
                 ui.button('Clear Log', on_click=lambda: self.log_output.clear()) \
-                    .props('flat outline text-color=grey-6 size=sm') \
+                    .props('flat outline text-color=grey-6 size=sm size-1.5vh') \
                     .classes('font-medium hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg transition-colors')
 
 
