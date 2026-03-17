@@ -1,4 +1,3 @@
-import asyncio
 from model.hil_system import HILSystem
 
 
@@ -41,16 +40,10 @@ class ScriptExecutor:
                     cmd_type = parts[1]
                     args = parts[2:]
 
-                    if cmd_type == '-wait':
-                        seconds = float(args[0])
-                        log_callback(f"... Waiting {seconds}s ...")
-                        await asyncio.sleep(seconds)
+                    await self.hil.process_command(cmd_type, args)
 
-                    else:
-                        self.hil.process_command(cmd_type, args)
-
-                        if update_callback:
-                            update_callback()
+                    if update_callback:
+                        update_callback()
 
         except Exception as e:
             log_callback(f"CRITICAL ERROR: {str(e)}")

@@ -26,6 +26,11 @@ class HtmlLogger:
         self._write(f"<div class='comment'>{text}</div>")
         self._write("</div>")
 
+    def log_wait(self, seconds: int):
+        self._write("<div class='div-base task-log'>")
+        self._write(f"<div class='comment'>Wait {seconds} seconds</div>")
+        self._write("</div>")
+
     def log_generic(self, title: str, message: str):
         self._write("<div class='div-base task-log'>")
         self._write(f"<h2>{title}</h2><span>{message}</span>")

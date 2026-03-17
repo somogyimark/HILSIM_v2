@@ -1,6 +1,7 @@
 from model.dut import DUT
 from model.logger import HtmlLogger
 from datetime import datetime
+import asyncio
 
 
 class HILSystem:
@@ -8,7 +9,7 @@ class HILSystem:
         self.dut = dut
         self.logger = HtmlLogger()
 
-    def process_command(self, cmd_type: str, args: list) -> dict:
+    async def process_command(self, cmd_type: str, args: list) -> dict:
 
 
         if cmd_type in ['-hwfi', '-swfi']:
@@ -62,6 +63,11 @@ class HILSystem:
         elif cmd_type == '-comment':
             text = " ".join(args)
             self.logger.log_comment(text)
+            return {'status': 'ok'}
+
+        elif cmd_type == '-wait':
+            await asyncio.sleep(int(args[0]))
+            self.logger.log_wait(int(args[0]))
             return {'status': 'ok'}
 
         return {'status': 'unknown'}
