@@ -11,10 +11,22 @@ class EditorPanel:
         callbacks: Dict {'run': func, 'save': func, 'load': func, 'logs': func}
         """
         self.callbacks = callbacks
-        self.current_file_path = None
+        self.pages = []
+        self.active_page_id = None
+        self.page_counter = 0
 
         with ui.card().classes('flex-1 w-1/2 h-full column no-wrap bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700'):
-            self.current_file_name = ui.label().classes('text-lg font-semibold text-slate-800 dark:text-slate-100 tracking-tight min-h-[18px] placeholder')
+            
+            with ui.row().classes('w-full relative group items-end flex-nowrap min-h-[40px] border-b border-slate-200 dark:border-slate-700'):
+                self.tabs_container = ui.row().classes('flex-1 overflow-x-auto gap-1 no-wrap items-end h-[40px] px-2 pt-2 scrollbar-hidden')
+                ui.button(icon='add', on_click=lambda: self.add_new_page()) \
+                    .props('flat round size=sm') \
+                    .classes('opacity-0 group-hover:opacity-100 transition-opacity mx-2 shrink-0 self-center text-slate-500 hover:text-blue-500')
+
+            self.editor = CustomEditor(value="") \
+                .classes('w-full h-48 border-b border-slate-200 dark:border-slate-700 overflow-hidden')
+            
+            self.editor.on('update:value', self.on_editor_update)
 
             default_code = (
                 "batchControl -init\n"
@@ -25,13 +37,7 @@ class EditorPanel:
                 "pause"
             )
 
-            self.last_saved_content = default_code
-
-            # self.editor = ui.codemirror(value=default_code, theme='github-light') \
-            #     .classes('w-full h-64 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-inner text-sm')
-
-            self.editor = CustomEditor(value=default_code) \
-                .classes('w-full h-48 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden')
+            self.add_new_page(content=default_code)
 
 
             with ui.row().classes('w-full justify-between mt-4'):
@@ -75,20 +81,132 @@ class EditorPanel:
     def append_log(self, message: str):
         self.log_output.push(message)
 
+    @property
+    def current_file_path(self):
+        p = self.get_active_page()
+        return p['path'] if p else None
+
+    @current_file_path.setter
+    def current_file_path(self, path):
+        p = self.get_active_page()
+        if p:
+            p['path'] = path
+
+    @property
+    def last_saved_content(self):
+        p = self.get_active_page()
+        return p['saved_content'] if p else ""
+
+    def add_new_page(self, name=None, content=""):
+        if not name:
+            self.page_counter += 1
+            name = f"Untitled-{self.page_counter}"
+
+        page_id = self.page_counter
+        self.page_counter += 1
+
+        new_page = {
+            'id': page_id,
+            'name': name,
+            'content': content,
+            'path': None,
+            'saved_content': content
+        }
+        self.pages.append(new_page)
+        self.switch_to_page(page_id)
+
+    def close_page(self, page_id):
+        idx = next((i for i, p in enumerate(self.pages) if p['id'] == page_id), -1)
+        if idx == -1: return
+
+        self.pages.pop(idx)
+
+        if len(self.pages) == 0:
+            self.add_new_page()
+        elif self.active_page_id == page_id:
+            new_idx = max(0, idx - 1)
+            self.switch_to_page(self.pages[new_idx]['id'])
+        else:
+            self.render_tabs()
+
+    def switch_to_page(self, page_id):
+        if self.active_page_id is not None:
+            active_page = self.get_active_page()
+            if active_page:
+                active_page['content'] = self.editor.value
+
+        self.active_page_id = page_id
+        new_active = self.get_active_page()
+        if new_active:
+            self.editor.value = new_active['content']
+            
+        self.render_tabs()
+
+    def get_active_page(self):
+        for p in self.pages:
+            if p['id'] == self.active_page_id:
+                return p
+        return None
+
+    def on_editor_update(self, e):
+        page = self.get_active_page()
+        if page:
+            old_dirty = (page['content'] != page['saved_content'])
+            page['content'] = e.args
+            new_dirty = (page['content'] != page['saved_content'])
+            if old_dirty != new_dirty:
+                self.render_tabs()
+
+    def render_tabs(self):
+        self.tabs_container.clear()
+        with self.tabs_container:
+            for page in self.pages:
+                is_active = (page['id'] == self.active_page_id)
+                bg_color = 'bg-[#08a4e5]/10 dark:bg-[#08a4e5]/20 border-t-2 border-[#08a4e5] text-[#08a4e5] dark:text-[#08a4e5]' if is_active else 'bg-transparent border-t-2 border-transparent text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'
+                
+                with ui.row().classes(f'relative px-3 py-1 cursor-pointer flex items-center gap-2 group/tab transition-colors {bg_color}') as tab_el:
+                    def make_switch(pid):
+                        return lambda e: self.switch_to_page(pid)
+                    tab_el.on('click', make_switch(page['id']))
+
+                    display_name = page['name']
+                    if page['content'] != page['saved_content']:
+                        display_name += ' *'
+                    
+                    ui.label(display_name).classes('text-[13px] font-medium whitespace-nowrap select-none')
+                    
+                    def make_close(pid):
+                        return lambda e: self.close_page(pid)
+                    close_btn = ui.icon('close').classes('text-[14px] cursor-pointer opacity-0 group-hover/tab:opacity-100 hover:!text-red-500 transition-opacity ml-1')
+                    close_btn.on('click.stop', make_close(page['id']))
+
     def set_content(self, text: str):
-        self.editor.value = text
+        p = self.get_active_page()
+        if p and p['path'] is None and p['content'] == p['saved_content']:
+            p['content'] = text
+            self.editor.value = text
+        else:
+            self.add_new_page(content=text)
 
     def update_curr_filename(self, text: str):
-        self.current_file_name.set_text(text)
+        p = self.get_active_page()
+        if p:
+            p['name'] = text
+            self.render_tabs()
 
     def get_curr_filename(self):
-        return self.current_file.text
+        p = self.get_active_page()
+        return p['name'] if p else ""
 
     def set_file_path(self, path):
         self.current_file_path = path
 
     def mark_as_saved(self, text: str):
-        self.last_saved_content = text
+        p = self.get_active_page()
+        if p:
+            p['saved_content'] = text
+            # Ensure the dirty asterisk goes away
+            self.render_tabs()
 
     async def open_save_dialog(self) -> bool:
         with ui.dialog() as dialog, ui.card().classes('w-96 bg-white p-6 rounded-2xl shadow-2xl border border-slate-100'):
