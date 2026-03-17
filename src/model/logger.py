@@ -31,6 +31,50 @@ class HtmlLogger:
         self._write(f"<div class='comment'>Wait {seconds} seconds</div>")
         self._write("</div>")
 
+    def log_hil_state(self, data: dict):
+        self._write("<div class='div-base task-log'>")
+        
+        html = f"""
+            <div class='assert-header'>
+                <h2>HIL State</h2>
+                <span>{datetime.now().strftime("%H:%M:%S")}</span>
+            </div>
+
+            <div class='assert-results'>
+                <div class='assert-row-header'>
+                    <div>Source</div>
+                    <div>Measured</div>
+                </div>
+
+                <div class='assert-row-data'>
+                    <div>Temperature</div>
+                    <div>{data['Temperature']}</div>
+                </div>
+                <div class='assert-row-data'>
+                    <div>Temperature LED</div>
+                    <div>{data['Temp LED']}</div>
+                </div>
+                <div class='assert-row-data'>
+                    <div>Switch</div>
+                    <div>{data['Switch']}</div>
+                </div>
+                <div class='assert-row-data'>
+                    <div>Switch LED</div>
+                    <div>{data['Switch LED']}</div>
+                </div>
+                <div class='assert-row-data'>
+                    <div>Potentiometer</div>
+                    <div>{data['Potentiometer']}</div>
+                </div>
+                <div class='assert-row-data'>
+                    <div>Quadrantal LEDs</div>
+                    <div>{data['Quadrantal LEDs']}</div>
+                </div>
+            </div>
+        """
+        self._write(html)
+        self._write("</div>")
+
     def log_generic(self, title: str, message: str):
         self._write("<div class='div-base task-log'>")
         self._write(f"<h2>{title}</h2><span>{message}</span>")

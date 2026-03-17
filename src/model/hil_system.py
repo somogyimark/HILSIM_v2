@@ -70,6 +70,19 @@ class HILSystem:
             self.logger.log_wait(int(args[0]))
             return {'status': 'ok'}
 
+        elif cmd_type == '-getHilState':
+            data = {
+                'type': 'hil_state',
+                'Temperature': self.dut.get_input('temp'),
+                'Temp LED': self.dut.get_output('temp_led'),
+                'Switch': self.dut.get_input('switch'),
+                'Switch LED': self.dut.get_output('switch_led'),
+                'Potentiometer': self.dut.get_input('pot'),
+                'Quadrantal LEDs': self.dut.get_output('pot_led'),
+            }
+            self.logger.log_hil_state(data)
+            return {'status': 'ok'}
+
         return {'status': 'unknown'}
 
     def init_dut(self):
