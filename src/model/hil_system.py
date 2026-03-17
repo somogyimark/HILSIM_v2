@@ -14,7 +14,10 @@ class HILSystem:
 
         if cmd_type in ['-hwfi', '-swfi']:
             source = args[0]
-            value = int(args[1])
+            if source == 'temp':
+                value = float(args[1])
+            else:
+                value = int(args[1])
 
             if cmd_type == '-hwfi':
                 self.dut.set_hw_input(source, value)
@@ -27,20 +30,31 @@ class HILSystem:
         elif cmd_type == '-assert':
 
             source = args[0]
-            expected = int(args[1])
+            if source == 'temp':
+                expected = float(args[1])
+            else:
+                expected = int(args[1])
 
             if '_led' in source:
                 measured = self.dut.get_output(source)
             else:
                 measured = self.dut.get_input(source)
 
-            result = "PASS" if (measured == expected) else "FAIL"
+            if source == 'temp':
+                result = "PASS" if abs(float(measured) - expected) < 0.001 else "FAIL"
+                measured_str = f"{float(measured):.2f}"
+                expected_str = f"{expected:.2f}"
+            else:
+                result = "PASS" if (measured == expected) else "FAIL"
+                measured_str = str(measured)
+                expected_str = str(expected)
+
             data= {
                 'type': 'assert',
                 'source': source,
-                'measured': measured,
+                'measured': measured_str,
                 'assertType': '=',
-                'expected': expected,
+                'expected': expected_str,
                 'result': result
             }
             self.logger.log_assert(data)
@@ -73,7 +87,7 @@ class HILSystem:
         elif cmd_type == '-getHilState':
             data = {
                 'type': 'hil_state',
-                'Temperature': self.dut.get_input('temp'),
+                'Temperature': f"{float(self.dut.get_input('temp')):.2f}",
                 'Temp LED': self.dut.get_output('temp_led'),
                 'Switch': self.dut.get_input('switch'),
                 'Switch LED': self.dut.get_output('switch_led'),
@@ -87,7 +101,7 @@ class HILSystem:
 
     def init_dut(self):
         self.dut.hw_inputs['pot'] = 0
-        self.dut.hw_inputs['temp'] = 25
+        self.dut.hw_inputs['temp'] = 25.00
         self.dut.hw_inputs['switch'] = 0
 
         self.dut.swfi_inputs['pot'] = None

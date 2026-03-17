@@ -2,8 +2,8 @@ from nicegui.element import Element
 
 
 class CustomKnob(Element, component='custom_knob.js'):
-    def __init__(self, value: int, min: int, max: int, on_change, size, color,
-                 label: str = None, dark_mode: bool = True):
+    def __init__(self, value: float, min: float, max: float, on_change, size, color,
+                 label: str = None, dark_mode: bool = True, step: float = 1.0, decimals: int = 0):
         super().__init__()
         self._props['value'] = value
         self._props['min'] = min
@@ -11,6 +11,8 @@ class CustomKnob(Element, component='custom_knob.js'):
         self._props['size'] = size
         self._props['color'] = color
         self._props['dark_mode'] = dark_mode
+        self._props['step'] = step
+        self._props['decimals'] = decimals
         if label:
             self._props['label'] = label
 

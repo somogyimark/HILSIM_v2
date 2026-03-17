@@ -23,7 +23,7 @@ export default {
 
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
           <span class="font-bold font-mono drop-shadow-md" :class="activeColorClass" :style="{ fontSize: 'calc(0.23 * ' + sizeStr + ')' }">
-            {{ Math.round(value) }}
+            {{ Number(value).toFixed(decimals) }}
           </span>
         </div>
       </div>
@@ -40,7 +40,9 @@ export default {
     size: { type: [Number, String], default: 100 },
     color: { type: String, default: 'blue' },
     label: { type: String, default: null },
-    dark_mode: { type: Boolean, default: true }
+    dark_mode: { type: Boolean, default: true },
+    step: { type: Number, default: 1 },
+    decimals: { type: Number, default: 0 }
   },
   data() {
     return {
@@ -86,16 +88,24 @@ export default {
     },
     handleMouseDown(e) {
       this.isDragging = true;
-      const newValue = this.calculateValueFromEvent(e.clientX, e.clientY);
-      this.$emit('update:value', Math.round(newValue));
+      let newValue = this.calculateValueFromEvent(e.clientX, e.clientY);
+      if (this.step > 0) {
+        newValue = Math.round(newValue / this.step) * this.step;
+      }
+      newValue = Number(newValue.toFixed(this.decimals));
+      this.$emit('update:value', newValue);
       document.body.style.cursor = 'grabbing';
       window.addEventListener('mousemove', this.handleMouseMove);
       window.addEventListener('mouseup', this.handleMouseUp);
     },
     handleMouseMove(e) {
       if (!this.isDragging) return;
-      const newValue = this.calculateValueFromEvent(e.clientX, e.clientY);
-      this.$emit('update:value', Math.round(newValue));
+      let newValue = this.calculateValueFromEvent(e.clientX, e.clientY);
+      if (this.step > 0) {
+        newValue = Math.round(newValue / this.step) * this.step;
+      }
+      newValue = Number(newValue.toFixed(this.decimals));
+      this.$emit('update:value', newValue);
     },
     handleMouseUp() {
       this.isDragging = false;

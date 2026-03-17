@@ -1,15 +1,15 @@
-from typing import Dict, Optional
 import random
+from typing import Dict, Optional, Union
 
 
 class DUT:
     def __init__(self):
-        self.hw_inputs: Dict[str, int] = {
+        self.hw_inputs: Dict[str, Union[int, float]] = {
             'pot': 0,
-            'temp': 25,
+            'temp': 25.00,
             'switch': 0
         }
-        self.swfi_inputs: Dict[str, Optional[int]] = {
+        self.swfi_inputs: Dict[str, Optional[Union[int, float]]] = {
             'pot': None,
             'temp': None,
             'switch': None
@@ -22,21 +22,21 @@ class DUT:
 
         self.bug: Optional[int] = None
 
-    def set_hw_input(self, component: str, value: int):
+    def set_hw_input(self, component: str, value: Union[int, float]):
         self.hw_inputs[component] = value
 
     def clear_hw_input(self, component: str):
         if component in self.hw_inputs:
             del self.hw_inputs[component]
 
-    def set_swfi_input(self, component: str, value: int):
+    def set_swfi_input(self, component: str, value: Union[int, float]):
         self.swfi_inputs[component] = value
 
     def clear_swfi_input(self, component: str):
         if component in self.swfi_inputs:
             del self.swfi_inputs[component]
 
-    def get_input(self, component: str) -> int:
+    def get_input(self, component: str) -> Union[int, float]:
         if self.swfi_inputs[component] is not None:
             return self.swfi_inputs[component]
         return self.hw_inputs[component]

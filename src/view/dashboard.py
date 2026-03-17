@@ -26,13 +26,15 @@ class DashboardPanel:
             with ui.row().classes('w-full h-1/3 items-center justify-between gap-8'):
 
                 self.temp_knob = CustomKnob(
-                    value=25,
-                    min=0,
-                    max=100,
+                    value=25.00,
+                    min=0.0,
+                    max=100.0,
                     size='15vh',
                     color='red',
                     label='',
-                    on_change=lambda val: self.callbacks['temp'](val)
+                    on_change=lambda val: self.callbacks['temp'](val),
+                    step=0.01,
+                    decimals=2
                 )
 
                 with ui.row().classes('gap-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner'):
