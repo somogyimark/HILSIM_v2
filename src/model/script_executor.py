@@ -1,5 +1,5 @@
 from model.hil_system import HILSystem
-
+import asyncio
 
 class ScriptExecutor:
     def __init__(self, hil_system: HILSystem):
@@ -48,6 +48,7 @@ class ScriptExecutor:
         except Exception as e:
             log_callback(f"CRITICAL ERROR: {str(e)}")
         finally:
+            self.is_running = False
             log_callback("... Resetting DUT to initial state ...")
             try:
                 self.hil.init_dut()
@@ -58,7 +59,6 @@ class ScriptExecutor:
                 log_callback(f"Error during reset: {reset_err}")
 
             self.hil.logger.close_log()
-            self.is_running = False
 
     def _validate_structure(self, lines, log_cb):
         # 1. -init

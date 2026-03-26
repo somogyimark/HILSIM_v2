@@ -218,6 +218,7 @@ class MainController:
 
         if self.view_dashboard:
             self.view_dashboard.update_view(feedback_colors, self.model.bug)
+            self.view_dashboard.set_inputs_enabled(not self.executor.is_running)
 
     def set_execution_delay(self, value):
         delay = float(value)

@@ -1,7 +1,8 @@
 export default {
   template: `
     <div class="flex flex-col items-center gap-2 select-none">
-      <div ref="knobRef" class="relative cursor-pointer group"
+      <div ref="knobRef" class="relative group"
+           :class="[disable ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer']"
            :style="{ width: sizeStr, height: sizeStr }"
            @mousedown="handleMouseDown">
         
@@ -42,7 +43,8 @@ export default {
     label: { type: String, default: null },
     dark_mode: { type: Boolean, default: true },
     step: { type: Number, default: 1 },
-    decimals: { type: Number, default: 0 }
+    decimals: { type: Number, default: 0 },
+    disable: { type: Boolean, default: false }
   },
   data() {
     return {
@@ -87,6 +89,7 @@ export default {
       return Math.max(this.min, Math.min(this.max, newValue));
     },
     handleMouseDown(e) {
+      if (this.disable) return;
       this.isDragging = true;
       let newValue = this.calculateValueFromEvent(e.clientX, e.clientY);
       if (this.step > 0) {

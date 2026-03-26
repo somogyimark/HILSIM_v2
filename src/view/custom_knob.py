@@ -41,3 +41,11 @@ class CustomKnob(Element, component='custom_knob.js'):
     def dark_mode(self, new_value: bool):
         self._props['dark_mode'] = new_value
         self.update()
+
+    def enable(self):
+        self._props['disable'] = False
+        self.update()
+
+    def disable(self):
+        self._props['disable'] = True
+        self.update()

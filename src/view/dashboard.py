@@ -111,3 +111,13 @@ class DashboardPanel:
         #     self.bug_indicator.classes(add='animate-pulse')
         # else:
         #     self.bug_indicator.classes(remove='animate-pulse')
+
+    def set_inputs_enabled(self, enabled: bool):
+        if enabled:
+            self.temp_knob.enable()
+            self.pot_knob.enable()
+            self.switch.enable()
+        else:
+            self.temp_knob.disable()
+            self.pot_knob.disable()
+            self.switch.disable()
