@@ -29,7 +29,7 @@ class MainLayout:
         self.build_ui()
 
     def build_ui(self):
-        self.dark_mode_ctrl = ui.dark_mode(False)
+        self.dark_mode_ctrl = ui.dark_mode(True)
         
         ui.query('body').classes('bg-[#f8fafc] dark:bg-[#0f172a] text-slate-800 dark:text-slate-200 font-sans antialiased overflow-hidden')
 
