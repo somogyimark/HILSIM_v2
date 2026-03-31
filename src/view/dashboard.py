@@ -13,7 +13,8 @@ class DashboardPanel:
         self.callbacks = callbacks
         self.pot_leds = []
 
-        with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6'):
+        with ui.card().classes('h-full flex-1 w-1/2 bg-white dark:!bg-[#1d2a3d]/80 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-6 relative overflow-hidden'):
+            self.progress_bar = ui.linear_progress(show_value=False).props('indeterminate color="primary"').classes('absolute top-0 left-0 w-full z-50 hidden')
 
             # ---------------------------------------------------------
             # 1. Temperature Section
@@ -117,7 +118,9 @@ class DashboardPanel:
             self.temp_knob.enable()
             self.pot_knob.enable()
             self.switch.enable()
+            self.progress_bar.classes(remove='block', add='hidden')
         else:
             self.temp_knob.disable()
             self.pot_knob.disable()
-            self.switch.disable()
+            self.switch.disable()
+            self.progress_bar.classes(remove='hidden', add='block')
