@@ -1,3 +1,5 @@
 nicegui
 pywebview
 rocher
+pytest
+pytest-cov

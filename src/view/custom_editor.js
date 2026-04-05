@@ -53,6 +53,7 @@ export default {
                             { label: '-wait', kind: monaco.languages.CompletionItemKind.Function, insertText: '-wait ' },
                             { label: '-log', kind: monaco.languages.CompletionItemKind.Function, insertText: '-log "$1"' },
                             { label: '-getHilState', kind: monaco.languages.CompletionItemKind.Function, insertText: '-getHilState' },
+                            { label: '-bug_on', kind: monaco.languages.CompletionItemKind.Function, insertText: '-bug_on'},
                             { label: 'pause', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'pause' },
                         ];
                         return { suggestions: suggestions };

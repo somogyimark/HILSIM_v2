@@ -9,7 +9,7 @@ class HILSystem:
         self.dut = dut
         self.logger = HtmlLogger()
 
-    async def process_command(self, cmd_type: str, args: list) -> dict:
+    async def process_command(self, cmd_type: str, args: list = None) -> dict:
 
 
         if cmd_type in ['-hwfi', '-swfi']:
@@ -67,7 +67,7 @@ class HILSystem:
             return {'status': 'ok'}
 
         elif cmd_type == '-init':
-            self.dut.__init__()
+            self.init_dut()
             self.logger.log_generic("Initialize", datetime.now().strftime("%H:%M:%S"))
             return {'status': 'ok'}
 
