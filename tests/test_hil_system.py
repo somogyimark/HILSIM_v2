@@ -7,6 +7,22 @@ from unittest.mock import MagicMock
 
 pytestmark = pytest.mark.asyncio
 
+
+async def test_init_command():
+    dut = DUT()
+    hil = HILSystem(dut)
+    hil.logger = MagicMock()
+
+    dut.set_hw_input('pot', 255)
+    dut.set_bug_active(True)
+
+    result = await hil.process_command('-init')
+
+    assert result == {'status': 'ok'}
+    assert dut.hw_inputs['pot'] == 0
+    assert dut.bug is None
+    hil.logger.log_generic.assert_called_once()
+
 async def test_hil_system_initialization():
     dut = DUT()
     hil = HILSystem(dut)
@@ -91,5 +107,50 @@ async def test_bugon():
     assert dut.bug != None
 
 
+async def test_start_command():
+    dut = DUT()
+    hil = HILSystem(dut)
+    hil.logger = MagicMock()
+
+    result = await hil.process_command('-start')
+
+    assert result == {'status': 'ok'}
 
 
+async def test_comment_command():
+    dut = DUT()
+    hil = HILSystem(dut)
+    hil.logger = MagicMock()
+
+    result = await hil.process_command('-comment', ['Ez', 'egy', 'teszt', 'üzenet'])
+
+    assert result == {'status': 'ok'}
+    hil.logger.log_comment.assert_called_once_with('Ez egy teszt üzenet')
+
+
+async def test_get_hil_state_command():
+    dut = DUT()
+    hil = HILSystem(dut)
+    hil.logger = MagicMock()
+
+    dut.set_hw_input('temp', 42.5)
+    dut.update_firmware()
+
+    result = await hil.process_command('-getHilState')
+
+    assert result == {'status': 'ok'}
+    hil.logger.log_hil_state.assert_called_once()
+
+    logged_data = hil.logger.log_hil_state.call_args[0][0]
+
+    assert logged_data['type'] == 'hil_state'
+    assert logged_data['Temperature'] == '42.50'
+
+
+async def test_unknown_command():
+    dut = DUT()
+    hil = HILSystem(dut)
+
+    result = await hil.process_command('-valami_ismeretlen_parancs', ['123'])
+
+    assert result == {'status': 'unknown'}
