@@ -49,12 +49,19 @@ export default {
                             { label: 'batchControl', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'batchControl ' },
                             { label: '-init', kind: monaco.languages.CompletionItemKind.Function, insertText: '-init' },
                             { label: '-hwfi', kind: monaco.languages.CompletionItemKind.Function, insertText: '-hwfi ' },
+                            { label: '-swfi', kind: monaco.languages.CompletionItemKind.Function, insertText: '-swfi ' },
                             { label: '-start', kind: monaco.languages.CompletionItemKind.Function, insertText: '-start' },
                             { label: '-wait', kind: monaco.languages.CompletionItemKind.Function, insertText: '-wait ' },
-                            { label: '-log', kind: monaco.languages.CompletionItemKind.Function, insertText: '-log "$1"' },
                             { label: '-getHilState', kind: monaco.languages.CompletionItemKind.Function, insertText: '-getHilState' },
                             { label: '-bug_on', kind: monaco.languages.CompletionItemKind.Function, insertText: '-bug_on'},
+                            { label: '-assert', kind: monaco.languages.CompletionItemKind.Function, insertText: '-assert'},
                             { label: 'pause', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'pause' },
+                            { label: 'temp', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'temp' },
+                            { label: 'pot', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'pot' },
+                            { label: 'switch', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'switch' },
+                            { label: 'temp_led', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'temp_led' },
+                            { label: 'pot_led', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'pot_led' },
+                            { label: 'switch_led', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'switch_led' },
                         ];
                         return { suggestions: suggestions };
                     }
