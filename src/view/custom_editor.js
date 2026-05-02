@@ -113,7 +113,14 @@ export default {
 
             // Változás figyelése és küldése a Pythonnak
             this.editor.onDidChangeModelContent(() => {
-                this.$emit('update:value', this.editor.getValue());
+                if (this.isSettingValue) return;
+                const val = this.editor.getValue();
+                if (!this.recentEmits) this.recentEmits = new Set();
+                this.recentEmits.add(val);
+                setTimeout(() => {
+                    this.recentEmits.delete(val);
+                }, 2000);
+                this.$emit('update:value', val);
             });
         }
     },
@@ -121,7 +128,12 @@ export default {
         // Ha a Python kód változtatja meg a szöveget, frissüljön az Editor
         value(newValue) {
             if (this.editor && newValue !== this.editor.getValue()) {
+                if (this.recentEmits && this.recentEmits.has(newValue)) {
+                    return;
+                }
+                this.isSettingValue = true;
                 this.editor.setValue(newValue);
+                this.isSettingValue = false;
             }
         },
         dark_mode(newValue) {

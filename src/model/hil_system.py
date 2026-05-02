@@ -60,7 +60,6 @@ class HILSystem:
             self.logger.log_assert(data)
             return {'status': 'ok'}
 
-
         elif cmd_type == '-bug_on':
             self.dut.set_bug_active(True)
             self.logger.log_generic("BUG_ON", datetime.now().strftime("%H:%M:%S"))

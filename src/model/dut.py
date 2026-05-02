@@ -111,7 +111,8 @@ class DUT:
                 self._update_switch_normal()
 
             case 4:
-                self.outputs['temp_led'] = 1 if self.get_input('temp') > 35 else 0
+                self.outputs['temp_led'] = 1\
+                    if self.get_input('temp') > 35 else 0
 
                 self._update_pot_normal()
                 self._update_switch_normal()
