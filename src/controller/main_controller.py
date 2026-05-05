@@ -17,10 +17,9 @@ class MainController:
         self.view_editor = None
 
         self.colors = {
-            # Itt most már tuple-öket használunk: ('quasar-szín-neve', 'css-glow-szöveg')
             'green': ('green-5', '0 0 10px rgba(74, 222, 128, 0.8), 0 0 20px rgba(74, 222, 128, 0.6)'),
             'red': ('red-5', '0 0 10px rgba(239, 68, 68, 0.8), 0 0 20px rgba(239, 68, 68, 0.6)'),
-            'grey': ('slate-300', 'none')  # A kikapcsolt (szürke) állapotnak nincs ragyogása
+            'grey': ('slate-300', 'none')
         }
 
     def register_layout(self, layout: MainLayout):
@@ -29,7 +28,6 @@ class MainController:
         self.view_editor = layout.editor
         self.refresh_system()
 
-    # --- Event Handlers (User Inputs) ---
 
     def on_temp_change(self, value):
         self.model.set_hw_input('temp', value)
@@ -133,7 +131,6 @@ class MainController:
                 with open(filepath, 'w', encoding='utf-8') as f:
                     f.write(content)
 
-                # Értesítés
                 if self.view_editor:
                     short_name = os.path.basename(filepath)
                     self.view_editor.mark_as_saved(content)

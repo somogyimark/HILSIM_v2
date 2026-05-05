@@ -7,9 +7,6 @@ from view.custom_knob import CustomKnob
 
 class DashboardPanel:
     def __init__(self, callbacks):
-        """
-        callbacks: {'temp': func, 'pot': func, 'switch': func, 'toggle_bug': func}
-        """
         self.callbacks = callbacks
         self.pot_leds = []
 
@@ -91,14 +88,11 @@ class DashboardPanel:
                 icon.props(f'color={color}')
             icon.style(f'text-shadow: {shadow}')
 
-        # Temp update
         apply_color(self.temp_icon, feedback_colors["temp"])
 
-        # Pot LEDs update
         for i, led_icon in enumerate(self.pot_leds):
             apply_color(led_icon, feedback_colors["pot_leds"][i])
 
-        # Switch LED update
         apply_color(self.switch_led, feedback_colors["switch"])
 
         if bug is None:
@@ -107,11 +101,6 @@ class DashboardPanel:
             bug_active = True
 
         self.bug_indicator.set_visibility(bug_active)
-
-        # if bug_active:
-        #     self.bug_indicator.classes(add='animate-pulse')
-        # else:
-        #     self.bug_indicator.classes(remove='animate-pulse')
 
     def set_inputs_enabled(self, enabled: bool):
         if enabled:
@@ -123,4 +112,4 @@ class DashboardPanel:
             self.temp_knob.disable()
             self.pot_knob.disable()
             self.switch.disable()
-            self.progress_bar.classes(remove='hidden', add='block')
+            self.progress_bar.classes(remove='hidden', add='block')

@@ -2,12 +2,11 @@ import os
 import subprocess
 import sys
 
-# Need to find nicegui and rocher paths reliably
 try:
     import nicegui
     import rocher
 except ImportError:
-    print("Dependencies not found! Please run pip install nicegui rocher")
+    print("Dependencies not found!")
     sys.exit(1)
 
 nicegui_dir = os.path.dirname(nicegui.__file__)
@@ -19,7 +18,7 @@ cmd = [
     pyinstaller_path,
     "--name", "HILSIM",
     "--onefile",
-    "--windowed", # Hides the command prompt on launch
+    "--windowed",
     "--add-data", f"{nicegui_dir};nicegui",
     "--add-data", f"{rocher_dir};rocher",
     "--add-data", f"assets;assets",

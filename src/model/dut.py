@@ -42,7 +42,7 @@ class DUT:
         return self.hw_inputs[component]
 
     def get_output(self, component: str) -> int:
-            return self.outputs[component]
+        return self.outputs[component]
 
     def set_bug_active(self, value: bool):
         if value:

@@ -7,9 +7,6 @@ from view.custom_editor import CustomEditor
 
 class EditorPanel:
     def __init__(self, callbacks):
-        """
-        callbacks: Dict {'run': func, 'save': func, 'load': func, 'logs': func}
-        """
         self.callbacks = callbacks
         self.pages = []
         self.active_page_id = None
@@ -205,7 +202,6 @@ class EditorPanel:
         p = self.get_active_page()
         if p:
             p['saved_content'] = text
-            # Ensure the dirty asterisk goes away
             self.render_tabs()
 
     async def open_save_dialog(self) -> bool:
@@ -221,7 +217,6 @@ class EditorPanel:
                     .classes('font-bold shadow-sm shadow-[#08a4e5]/20 rounded-lg')
 
             with ui.row().classes('hidden'):
-                # We do not strictly need the extra Close button if they choose Yes/No, keeping original logic.
                 ui.button('Close', on_click=dialog.close)
 
         result = await dialog

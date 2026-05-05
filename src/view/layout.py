@@ -63,7 +63,6 @@ class MainLayout:
             self.dashboard = DashboardPanel(self.dash_callbacks)
             self.editor = EditorPanel(self.editor_callbacks)
             
-            # Sync components' themes to current dark mode and update on toggle
             def sync_dark_mode(e):
                 val = e.value
                 self.editor.editor.dark_mode = val

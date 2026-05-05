@@ -61,19 +61,16 @@ class ScriptExecutor:
             self.hil.logger.close_log()
 
     def _validate_structure(self, lines, log_cb):
-        # 1. -init
         has_init = any('batchControl -init' in line for line in lines)
         if not has_init:
             log_cb("ERROR: Script must contain 'batchControl -init'")
             return False
 
-        # 2. -start
         has_start = any('batchControl -start' in line for line in lines)
         if not has_start:
             log_cb("ERROR: Script must contain 'batchControl -start'")
             return False
 
-        # 3. pause
         has_pause = any(line.lower() == 'pause' for line in lines)
         if not has_pause:
             log_cb("ERROR: Script must contain 'pause'")
