@@ -151,6 +151,6 @@ async def test_unknown_command():
     dut = DUT()
     hil = HILSystem(dut)
 
-    result = await hil.process_command('-valami_ismeretlen_parancs', ['123'])
+    result = await hil.process_command('-unknown_command', ['123'])
 
     assert result == {'status': 'unknown'}
